@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق التواصل الاجتماعي المطوّر</title>
+  <style>
+    /* إعدادات عامة */
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1f4037, #99f2c8);
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin: 20px 0;
+      color: #fdfdfd;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .section {
+      margin: 20px 0;
+      padding: 25px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .section:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .section h2 {
+      margin: 0 0 15px;
+      font-size: 22px;
+      color: #fdfdfd;
+    }
+
+    .section input {
+      width: 85%;
+      padding: 14px;
+      margin: 12px 0;
+      border: none;
+      border-radius: 25px;
+      outline: none;
+      font-size: 16px;
+      background: #fff;
+      color: #333;
+    }
+
+    .section button {
+      padding: 14px 30px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(120deg, #ff7e5f, #feb47b);
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .section button:hover {
+      background: linear-gradient(120deg, #feb47b, #ff7e5f);
+      transform: scale(1.1);
+    }
+
+    .icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .dark-mode-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s;
+    }
+
+    .dark-mode-toggle:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    body.dark-mode {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #ddd;
+    }
+
+    body.dark-mode .section {
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    body.dark-mode input {
+      background: #2a2a3b;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- زر الوضع الليلي -->
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()">الوضع الليلي</button>
+
+  <div class="container">
+    <h1>تطبيق التواصل الاجتماعي المطوّر</h1>
+
+    <!-- WhatsApp Section -->
+    <div class="section">
+      <div class="icon">📞</div>
+      <h2>WhatsApp</h2>
+      <input id="whatsappInput" type="text" placeholder="اكتب رقم الهاتف هنا">
+      <button onclick="openWhatsApp()">دخول</button>
+    </div>
+
+    <!-- Instagram Section -->
+    <div class="section">
+      <div class="icon">📸</div>
+      <h2>Instagram</h2>
+      <input id="instagramInput" type="text" placeholder="اكتب معرف الإنستا هنا">
+      <button onclick="openInstagram()">دخول</button>
+    </div>
+
+    <!-- Telegram Section -->
+    <div class="section">
+      <div class="icon">✈️</div>
+      <h2>Telegram</h2>
+      <input id="telegramInput" type="text" placeholder="اكتب معرف التلي هنا">
+      <button onclick="openTelegram()">دخول</button>
+    </div>
+
+    <!-- Twitter Section -->
+    <div class="section">
+      <div class="icon">🐦</div>
+      <h2>Twitter</h2>
+      <input id="twitterInput" type="text" placeholder="اكتب معرف تويتر هنا">
+      <button onclick="openTwitter()">دخول</button>
+    </div>
+
+    <!-- Facebook Section -->
+    <div class="section">
+      <div class="icon">📘</div>
+      <h2>Facebook</h2>
+      <input id="facebookInput" type="text" placeholder="اكتب معرف الفيسبوك هنا">
+      <button onclick="openFacebook()">دخول</button>
+    </div>
+
+    <!-- TikTok Section -->
+    <div class="section">
+      <div class="icon">🎶</div>
+      <h2>TikTok</h2>
+      <input id="tiktokInput" type="text" placeholder="اكتب معرف تيك توك هنا">
+      <button onclick="openTikTok()">دخول</button>
+    </div>
+
+    <!-- Viber Section -->
+    <div class="section">
+      <div class="icon">💜</div>
+      <h2>Viber</h2>
+      <input id="viberInput" type="text" placeholder="اكتب معرف فايبر هنا">
+      <button onclick="openViber()">دخول</button>
+    </div>
+  </div>
+
+  <script>
+    // التحقق من صحة الإدخال
+    function validateInput(input, type) {
+      if (!input) {
+        alert("يرجى إدخال البيانات!");
+        return false;
+      }
+      if (type === "phone" && !input.startsWith("+")) {
+        alert("يرجى إدخال رقم هاتف صحيح (ابدأ بـ + ورقم الدولة)!");
+        return false;
+      }
+      if (type === "username" && /\s/.test(input)) {
+        alert("يرجى إدخال معرف صحيح بدون مسافات!");
+        return false;
+      }
+      return true;
+    }
+
+    function openWhatsApp() {
+      const number = document.getElementById("whatsappInput").value;
+      if (validateInput(number, "phone")) {
+        window.location.href = `https://wa.me/${number}`;
+      }
+    }
+
+    function openInstagram() {
+      const username = document.getElementById("instagramInput").value;
+      if (validateInput(username, "username")) {
+        window.location.href = `https://www.instagram.com/${username}`;
+      }
+    }
+
+    function openTelegram() {
+      const username = document.getElementById("telegramInput").value;
+      if (validateInput(username, "username")) {
+        window.location.href = `https://t.me/${username}`;
+      }
+    }
+
+    function openTwitter() {
+      const username = document.getElementById("twitterInput").value;
+      if (validateInput(username, "username")) {
+        window.location.href = `https://twitter.com/${username}`;
+      }
+    }
+
+    function openFacebook() {
+      const username = document.getElementById("facebookInput").value;
+      if (validateInput(username, "username")) {
+        window.location.href = `https://www.facebook.com/${username}`;
+      }
+    }
+
+    function openTikTok() {
+      const username = document.getElementById("tiktokInput").value;
+      if (validateInput(username, "username")) {
+        window.location.href = `https://www.tiktok.com/@${username}`;
+      }
+    }
+
+    function openViber() {
+      const username = document.getElementById("viberInput").value;
+      if (validateInput(username, "username")) {
+        window.location.href = `viber://add?number=${username}`;
+      }
+    }
+
+    // تبديل الوضع الليلي
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script>
+</body>
+</html>

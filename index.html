@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تطبيق التواصل الاجتماعي المطوّر</title>
   <style>
-    /* إعدادات عامة */
     body {
       font-family: 'Cairo', sans-serif;
       margin: 0;
@@ -120,7 +119,6 @@
   </style>
 </head>
 <body>
-  <!-- زر الوضع الليلي -->
   <button class="dark-mode-toggle" onclick="toggleDarkMode()">الوضع الليلي</button>
 
   <div class="container">
@@ -178,31 +176,33 @@
     <div class="section">
       <div class="icon">💜</div>
       <h2>Viber</h2>
-      <input id="viberInput" type="text" placeholder="اكتب معرف فايبر هنا">
+      <input id="viberInput" type="text" placeholder="اكتب رقم الهاتف هنا">
       <button onclick="openViber()">دخول</button>
     </div>
   </div>
 
   <script>
-    // التحقق من صحة الإدخال
+    function formatPhoneNumber(phone) {
+      phone = phone.trim();
+      if (phone.startsWith("0")) {
+        return "+964" + phone.slice(1);
+      } else if (!phone.startsWith("+")) {
+        return "+964" + phone;
+      }
+      return phone;
+    }
+
     function validateInput(input, type) {
       if (!input) {
         alert("يرجى إدخال البيانات!");
-        return false;
-      }
-      if (type === "phone" && !input.startsWith("+")) {
-        alert("يرجى إدخال رقم هاتف صحيح (ابدأ بـ + ورقم الدولة)!");
-        return false;
-      }
-      if (type === "username" && /\s/.test(input)) {
-        alert("يرجى إدخال معرف صحيح بدون مسافات!");
         return false;
       }
       return true;
     }
 
     function openWhatsApp() {
-      const number = document.getElementById("whatsappInput").value;
+      let number = document.getElementById("whatsappInput").value;
+      number = formatPhoneNumber(number);
       if (validateInput(number, "phone")) {
         window.location.href = `https://wa.me/${number}`;
       }
@@ -244,13 +244,13 @@
     }
 
     function openViber() {
-      const username = document.getElementById("viberInput").value;
-      if (validateInput(username, "username")) {
-        window.location.href = `viber://add?number=${username}`;
+      let number = document.getElementById("viberInput").value;
+      number = formatPhoneNumber(number);
+      if (validateInput(number, "phone")) {
+        window.location.href = `viber://add?number=${number}`;
       }
     }
 
-    // تبديل الوضع الليلي
     function toggleDarkMode() {
       document.body.classList.toggle("dark-mode");
     }

@@ -1,220 +1,1237 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تطبيق التواصل الاجتماعي المتحرك</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-  <style>
-    /* إعدادات عامة */
-    body {
-      font-family: 'Cairo', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #fff;
-      text-align: center;
-      overflow-x: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق التواصل الاجتماعي المتحرك</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css">
+    <style>
+         /* إعدادات عامة */
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            text-align: center;
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
 
-    h1 {
-      font-size: 36px;
-      margin: 20px 0;
-      color: #fdfdfd;
-      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-    }
+        h1 {
+            font-size: 36px;
+            margin: 20px 0;
+            color: #fdfdfd;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
 
-    .container {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
+        .container {
+            padding: 20px;
+            max-width: 900px;
+            margin: auto;
+        }
 
-    .section {
-      margin: 20px 0;
-      padding: 25px;
-      border-radius: 15px;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(15px);
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      opacity: 0;
-      transform: translateY(50px);
-    }
+        .section {
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            opacity: 0;
+            transform: translateY(50px);
+            position: relative;
+        }
 
-    .section.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+        .section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-    .section:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-    }
+        .section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
 
-    .section h2 {
-      font-size: 22px;
-      color: #fff;
-    }
+        .section h2 {
+            font-size: 22px;
+            color: #fff;
+        }
 
-    .section input {
-      width: 80%;
-      padding: 14px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 25px;
-      background: #fff;
-      color: #333;
-      font-size: 16px;
-    }
+        .section input {
+            width: 80%;
+            padding: 14px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 25px;
+            background: #fff;
+            color: #333;
+            font-size: 16px;
+        }
+          .section input:focus{
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+        }
+        .section button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(120deg, #ff7e5f, #feb47b);
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
 
-    .section button {
-      padding: 10px 25px;
-      border: none;
-      border-radius: 25px;
-      background: linear-gradient(120deg, #ff7e5f, #feb47b);
-      color: #fff;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s ease, background 0.3s ease;
-    }
+        .section button:hover {
+            background: linear-gradient(120deg, #feb47b, #ff7e5f);
+            transform: scale(1.1);
+        }
 
-    .section button:hover {
-      background: linear-gradient(120deg, #feb47b, #ff7e5f);
-      transform: scale(1.1);
-    }
+        /* الوضع الليلي */
+        .dark-mode {
+            background: linear-gradient(135deg, #141e30, #243b55);
+            color: #ddd;
+        }
 
-    /* الوضع الليلي */
-    .dark-mode {
-      background: linear-gradient(135deg, #141e30, #243b55);
-      color: #ddd;
-    }
+        .dark-mode .section {
+            background: rgba(0, 0, 0, 0.7);
+            color: #ddd;
+        }
 
-    .dark-mode .section {
-      background: rgba(0, 0, 0, 0.7);
-      color: #ddd;
-    }
+        .dark-mode input {
+            background: #333;
+            color: #fff;
+        }
 
-    .dark-mode input {
-      background: #333;
-      color: #fff;
-    }
+         .controls {
+            margin-top: 20px;
+            display: flex;
+             justify-content: center;
+           align-items: center;
+             flex-wrap: wrap;
+        }
 
-    .controls {
-      margin-top: 20px;
-    }
+        .controls button {
+             padding: 10px 20px;
+            margin: 5px;
+           border: none;
+             border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+             color: #fff;
+            transition: background 0.3s ease;
+         }
 
-    .controls button {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      color: #fff;
-    }
+       .controls .dark-mode-toggle {
+            background: #2c5364;
+        }
 
-    .controls .dark-mode-toggle {
-      background: #2c5364;
-    }
+        .controls .dark-mode-toggle:hover {
+            background: #3f718a;
+        }
 
-    .controls .reset-btn {
-      background: #ff4e50;
-    }
-  </style>
+        .controls .reset-btn {
+            background: #ff4e50;
+        }
+
+         .controls .reset-btn:hover {
+            background: #ff7e81;
+        }
+
+       .controls .add-platform-btn {
+           background: #4caf50;
+        }
+
+        .controls .add-platform-btn:hover {
+            background: #66bb6a;
+       }
+         .controls .settings-btn {
+           background: #9c27b0;
+        }
+        .controls .settings-btn:hover{
+            background: #ba68c8;
+       }
+         .controls .import-export-btn {
+            background: #009688;
+       }
+
+       .controls .import-export-btn:hover {
+           background: #26a69a;
+        }
+        .controls .search-btn {
+            background: #00bcd4;
+         }
+
+        .controls .search-btn:hover {
+           background: #26c6da;
+         }
+        /* إضافة منصة */
+        .add-platform-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .add-platform-modal-content {
+            background-color: rgba(255, 255, 255, 0.85);
+             margin: 15% auto;
+           padding: 20px;
+           border: 1px solid #888;
+            width: 80%;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            color: #333;
+        }
+
+        .add-platform-modal-content input {
+            margin: 10px 0;
+           width: 80%;
+           padding: 14px;
+           border: 1px solid #ccc;
+            border-radius: 25px;
+           font-size: 16px;
+           color: #333;
+       }
+
+        .add-platform-modal-content button {
+            padding: 10px 25px;
+            border: none;
+             border-radius: 25px;
+           background: linear-gradient(120deg, #ff7e5f, #feb47b);
+           color: #fff;
+             font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+           transition: background 0.3s ease;
+        }
+
+       .add-platform-modal-content button:hover {
+            background: linear-gradient(120deg, #feb47b, #ff7e5f);
+        }
+
+        .close {
+            color: #aaa;
+           float: left;
+            font-size: 28px;
+             font-weight: bold;
+        }
+
+       .close:hover,
+       .close:focus {
+            color: black;
+            text-decoration: none;
+           cursor: pointer;
+        }
+
+         .platforms-container {
+           max-height: 400px;
+           overflow-y: auto;
+        }
+
+       .platform-item {
+            margin-bottom: 5px;
+             padding: 5px;
+            background-color: #f0f0f0;
+           border-radius: 5px;
+          display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #333;
+        }
+
+        .platform-item button {
+             padding: 5px 10px;
+           border: none;
+            border-radius: 5px;
+            background-color: #f44336;
+            color: white;
+          cursor: pointer;
+            transition: background-color 0.3s ease;
+       }
+
+        .platform-item button:hover {
+           background-color: #d32f2f;
+       }
+
+        .section .edit-button {
+             position: absolute;
+             top: 10px;
+           left: 10px;
+             padding: 5px;
+           background: transparent;
+             border: none;
+           font-size: 1.2rem;
+           cursor: pointer;
+           color: #ccc;
+            transition: color 0.3s ease;
+      }
+
+        .section .edit-button:hover {
+            color: #fff;
+       }
+
+        /* تعديل منصة */
+         .edit-platform-modal {
+            display: none;
+             position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+          width: 100%;
+            height: 100%;
+            overflow: auto;
+          background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .edit-platform-modal-content {
+           background-color: rgba(255, 255, 255, 0.85);
+           margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            color: #333;
+         }
+
+        .edit-platform-modal-content input {
+           margin: 10px 0;
+             width: 80%;
+            padding: 14px;
+            border: 1px solid #ccc;
+             border-radius: 25px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .edit-platform-modal-content button {
+            padding: 10px 25px;
+           border: none;
+           border-radius: 25px;
+            background: linear-gradient(120deg, #ff7e5f, #feb47b);
+             color: #fff;
+            font-size: 16px;
+             font-weight: bold;
+           cursor: pointer;
+            transition: background 0.3s ease;
+       }
+
+       .edit-platform-modal-content button:hover {
+           background: linear-gradient(120deg, #feb47b, #ff7e5f);
+        }
+        .edit-platform-modal-content textarea {
+            margin: 10px 0;
+             width: 80%;
+            height: 100px;
+             padding: 10px;
+             border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+             color: #333;
+        }
+        .edit-platform-modal-content textarea:focus{
+           outline: none;
+             box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+         }
+
+
+        /* إعدادات */
+        .settings-modal {
+             display: none;
+            position: fixed;
+           z-index: 3;
+            left: 0;
+             top: 0;
+            width: 100%;
+            height: 100%;
+           overflow: auto;
+           background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .settings-modal-content {
+            background-color: rgba(255, 255, 255, 0.85);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+             width: 80%;
+           border-radius: 15px;
+            text-align: center;
+           backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+           color: #333;
+       }
+
+        .settings-modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .settings-modal-content .theme-selector {
+            margin-bottom: 20px;
+       }
+
+       .settings-modal-content .theme-selector button {
+            padding: 10px 20px;
+             margin: 5px;
+            border: none;
+            border-radius: 25px;
+             font-size: 16px;
+           cursor: pointer;
+            color: #fff;
+             transition: background 0.3s ease;
+        }
+
+        .settings-modal-content .theme-selector button.light-theme {
+           background: #eee;
+            color: #333;
+        }
+
+         .settings-modal-content .theme-selector button.light-theme:hover {
+            background: #ddd;
+       }
+
+       .settings-modal-content .theme-selector button.dark-theme {
+             background: #333;
+         }
+
+         .settings-modal-content .theme-selector button.dark-theme:hover {
+           background: #222;
+        }
+
+        .settings-modal-content button.reset-settings {
+            background: #f44336;
+             color: #fff;
+           transition: background 0.3s ease;
+      }
+
+        .settings-modal-content button.reset-settings:hover {
+             background: #d32f2f;
+        }
+       .settings-modal-content .order-selector{
+            margin-bottom: 20px;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+       }
+
+        .settings-modal-content .order-selector button {
+             padding: 10px 20px;
+             margin: 5px;
+           border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #fff;
+            transition: background 0.3s ease;
+        }
+       .settings-modal-content .order-selector button.sort-name-asc {
+            background: #4caf50;
+       }
+        .settings-modal-content .order-selector button.sort-name-asc:hover {
+            background: #66bb6a;
+        }
+        .settings-modal-content .order-selector button.sort-name-desc {
+            background: #ff9800;
+       }
+       .settings-modal-content .order-selector button.sort-name-desc:hover {
+           background: #ffa733;
+        }
+        .settings-modal-content .order-selector button.sort-custom {
+            background: #009688;
+        }
+        .settings-modal-content .order-selector button.sort-custom:hover {
+           background: #26a69a;
+        }
+         .settings-modal-content .color-picker-container {
+           margin-bottom: 20px;
+        }
+         .settings-modal-content .color-picker-container label {
+           display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+         /* رسائل الخطأ */
+        .error-message {
+           color: #f44336;
+            font-size: 14px;
+           margin-top: 5px;
+            display: block;
+       }
+       .section input.error{
+            border: 1px solid #f44336;
+        }
+        /* استيراد وتصدير */
+         .import-export-modal {
+           display: none;
+            position: fixed;
+           z-index: 4;
+            left: 0;
+             top: 0;
+           width: 100%;
+           height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+       .import-export-modal-content {
+           background-color: rgba(255, 255, 255, 0.85);
+            margin: 15% auto;
+           padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+           border-radius: 15px;
+            text-align: center;
+           backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+             color: #333;
+       }
+
+        .import-export-modal-content textarea {
+             width: 80%;
+            height: 150px;
+           margin: 10px 0;
+            padding: 10px;
+           border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+       }
+       .import-export-modal-content textarea:focus{
+           outline: none;
+           box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+       }
+
+        .import-export-modal-content button {
+             padding: 10px 25px;
+           border: none;
+            border-radius: 25px;
+           background: linear-gradient(120deg, #ff7e5f, #feb47b);
+           color: #fff;
+           font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+       .import-export-modal-content button:hover {
+            background: linear-gradient(120deg, #feb47b, #ff7e5f);
+        }
+         .import-export-modal-content .file-input-container {
+           margin-bottom: 20px;
+       }
+         .import-export-modal-content input[type="file"] {
+           display: none;
+        }
+        .import-export-modal-content .custom-file-input-btn {
+            padding: 10px 25px;
+            border: none;
+           border-radius: 25px;
+           background: linear-gradient(120deg, #009688, #26a69a);
+           color: #fff;
+           font-size: 16px;
+            font-weight: bold;
+           cursor: pointer;
+            transition: background 0.3s ease;
+           display: inline-block;
+       }
+       .import-export-modal-content .custom-file-input-btn:hover {
+             background: linear-gradient(120deg, #26a69a, #009688);
+        }
+         /* بحث */
+         .search-modal {
+            display: none;
+             position: fixed;
+            z-index: 5;
+            left: 0;
+            top: 0;
+            width: 100%;
+             height: 100%;
+           overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+       .search-modal-content {
+             background-color: rgba(255, 255, 255, 0.85);
+            margin: 15% auto;
+            padding: 20px;
+             border: 1px solid #888;
+            width: 80%;
+           border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+           color: #333;
+        }
+
+        .search-modal-content input {
+             margin: 10px 0;
+             width: 80%;
+            padding: 14px;
+            border: 1px solid #ccc;
+           border-radius: 25px;
+             font-size: 16px;
+            color: #333;
+        }
+        .search-modal-content input:focus{
+           outline: none;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+         }
+       .search-modal-content select{
+           margin: 10px 0;
+            width: 80%;
+           padding: 14px;
+           border: 1px solid #ccc;
+             border-radius: 25px;
+             font-size: 16px;
+            color: #333;
+      }
+       .search-modal-content select:focus{
+           outline: none;
+           box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+       }
+         .search-modal-content .search-results {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+          text-align: right;
+      }
+         .search-modal-content .search-result-item {
+           margin-bottom: 10px;
+             padding: 10px;
+            background-color: #f0f0f0;
+             border-radius: 5px;
+             color: #333;
+       }
+       .search-modal-content .search-result-item span {
+          font-weight: bold;
+            margin-left: 5px;
+        }
+         .search-modal-content button {
+           padding: 10px 25px;
+            border: none;
+           border-radius: 25px;
+           background: linear-gradient(120deg, #00bcd4, #26c6da);
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-modal-content button:hover {
+            background: linear-gradient(120deg, #26c6da, #00bcd4);
+        }
+    </style>
 </head>
 <body>
-  <div class="controls">
+<div class="controls">
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">الوضع الليلي</button>
     <button class="reset-btn" onclick="resetInputs()">إعادة تعيين</button>
-  </div>
+    <button class="add-platform-btn" onclick="openAddPlatformModal()">إضافة منصة</button>
+   <button class="settings-btn" onclick="openSettingsModal()"><i class="fas fa-cog"></i> الإعدادات</button>
+    <button class="import-export-btn" onclick="openImportExportModal()"><i class="fas fa-upload"></i> استيراد وتصدير</button>
+    <button class="search-btn" onclick="openSearchModal()"><i class="fas fa-search"></i> بحث</button>
 
-  <div class="container">
+</div>
+<div class="container">
     <h1>تطبيق التواصل الاجتماعي المتحرك</h1>
     <div id="sections"></div>
-  </div>
+</div>
 
-  <script>
-    // المنصات الاجتماعية
-    const platforms = [
-      { name: "WhatsApp", icon: "📞", placeholder: "رقم الهاتف", url: "https://wa.me/" },
-      { name: "Viber", icon: "💜", placeholder: "رقم فايبر", url: "viber://add?number=" },
-      { name: "Telegram", icon: "✈️", placeholder: "معرف تلغرام", url: "https://t.me/" },
-      { name: "Instagram", icon: "📸", placeholder: "معرف إنستغرام", url: "https://instagram.com/" },
-      { name: "TikTok", icon: "🎶", placeholder: "معرف تيك توك", url: "https://www.tiktok.com/@" },
-      { name: "Facebook", icon: "📘", placeholder: "معرف فيسبوك", url: "https://www.facebook.com/" },
-      { name: "Messenger", icon: "💬", placeholder: "معرف ماسنجر", url: "https://m.me/" },
-      { name: "twitter", icon: "🔞", placeholder: "تويتر", url: "https://twitter.com/" },
-      { name: "Discord", icon: "🎮", placeholder: "اسم المستخدم # الرقم", url: "https://discord.com/users/" },
-      { name: "Snapchat", icon: "👻", placeholder: "معرف سناب شات", url: "https://www.snapchat.com/add/" },
-    ];
+<div id="addPlatformModal" class="add-platform-modal">
+    <div class="add-platform-modal-content">
+        <span class="close" onclick="closeAddPlatformModal()">×</span>
+        <h2>إضافة منصة جديدة</h2>
+         <input type="text" id="newPlatformName" placeholder="اسم المنصة" />
+        <span id="newPlatformNameError" class="error-message"></span>
+         <input type="text" id="newPlatformIcon" placeholder="الأيقونة (Emoji)" />
+        <span id="newPlatformIconError" class="error-message"></span>
+        <input type="text" id="newPlatformPlaceholder" placeholder="مثال: اسم المستخدم" />
+       <span id="newPlatformPlaceholderError" class="error-message"></span>
+        <input type="text" id="newPlatformUrl" placeholder="عنوان URL (مثال: https://example.com/)" />
+       <span id="newPlatformUrlError" class="error-message"></span>
+        <button onclick="addPlatform()">إضافة</button>
+   </div>
+</div>
 
-    // إنشاء الأقسام ديناميكيًا
-    function createSections() {
-      const container = document.getElementById("sections");
-      platforms.forEach(platform => {
-        const section = document.createElement("div");
-        section.className = "section";
-        section.innerHTML = `
-          <h2>${platform.icon} ${platform.name}</h2>
-          <input type="text" id="${platform.name}Input" placeholder="${platform.placeholder}" />
-          <button onclick="navigateTo('${platform.name}', '${platform.url}')">اذهب</button>
-        `;
-        container.appendChild(section);
-      });
+<div id="editPlatformModal" class="edit-platform-modal">
+   <div class="edit-platform-modal-content">
+        <span class="close" onclick="closeEditPlatformModal()">×</span>
+       <h2>تعديل المنصة</h2>
+        <input type="text" id="editPlatformName" placeholder="اسم المنصة" />
+         <span id="editPlatformNameError" class="error-message"></span>
+         <input type="text" id="editPlatformIcon" placeholder="الأيقونة (Emoji)" />
+         <span id="editPlatformIconError" class="error-message"></span>
+        <input type="text" id="editPlatformPlaceholder" placeholder="مثال: اسم المستخدم" />
+         <span id="editPlatformPlaceholderError" class="error-message"></span>
+       <input type="text" id="editPlatformUrl" placeholder="عنوان URL (مثال: https://example.com/)" />
+        <span id="editPlatformUrlError" class="error-message"></span>
+         <textarea id="editPlatformNotes" placeholder="الملاحظات"></textarea>
+         <button onclick="saveEditPlatform()">حفظ التعديلات</button>
+    </div>
+</div>
 
-      // استدعاء الحركات
-      observeSections();
+<div id="settingsModal" class="settings-modal">
+    <div class="settings-modal-content">
+        <span class="close" onclick="closeSettingsModal()">×</span>
+        <h2>إعدادات التطبيق</h2>
+         <div class="theme-selector">
+            <button class="light-theme" onclick="setLightTheme()">الوضع الفاتح</button>
+            <button class="dark-theme" onclick="setDarkTheme()">الوضع الداكن</button>
+        </div>
+        <div class="order-selector">
+            <button class="sort-name-asc" onclick="sortPlatformsByNameAsc()">ترتيب الأسماء تصاعدياً</button>
+            <button class="sort-name-desc" onclick="sortPlatformsByNameDesc()">ترتيب الأسماء تنازلياً</button>
+            <button class="sort-custom" onclick="openCustomSortModal()">ترتيب مخصص</button>
+        </div>
+        <div class="color-picker-container">
+            <label for="colorPicker">تخصيص لون الخلفية:</label>
+            <input type="text" id="colorPicker" value="#1e3c72" />
+        </div>
+       <button class="reset-settings" onclick="resetAllSettings()">إعادة تعيين الإعدادات</button>
+    </div>
+</div>
+ <div id="customSortModal" class="settings-modal">
+        <div class="settings-modal-content">
+        <span class="close" onclick="closeCustomSortModal()">×</span>
+          <h2>ترتيب مخصص للمنصات</h2>
+            <ul id="sortablePlatforms">
+             </ul>
+             <button onclick="saveCustomOrder()">حفظ الترتيب</button>
+      </div>
+ </div>
+<div id="importExportModal" class="import-export-modal">
+    <div class="import-export-modal-content">
+         <span class="close" onclick="closeImportExportModal()">×</span>
+        <h2>استيراد وتصدير المنصات</h2>
+         <textarea id="exportTextArea" placeholder="المنصات بتنسيق JSON"></textarea>
+        <button onclick="exportPlatforms()">تصدير المنصات</button>
+        <div class="file-input-container">
+             <label for="importFileInput" class="custom-file-input-btn">استيراد من ملف</label>
+            <input type="file" id="importFileInput" accept=".json" onchange="importPlatformsFromFile(event)">
+        </div>
+         <button onclick="importPlatforms()">استيراد المنصات</button>
+    </div>
+</div>
+<div id="searchModal" class="search-modal">
+    <div class="search-modal-content">
+        <span class="close" onclick="closeSearchModal()">×</span>
+        <h2>البحث عن منصة</h2>
+        <input type="text" id="searchInput" placeholder="ابحث عن منصة..." oninput="searchPlatforms()" />
+       <select id="searchFieldSelect" >
+            <option value="name">اسم المنصة</option>
+            <option value="placeholder">مثال الإدخال</option>
+            <option value="url">الرابط</option>
+       </select>
+       <button onclick="searchPlatforms()">بحث</button>
+       <div class="search-results" id="searchResults">
+            <!-- نتائج البحث هنا -->
+        </div>
+    </div>
+</div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+<script>
+     // المنصات الاجتماعية
+     let platforms = [
+         {name: "WhatsApp", icon: "📞", placeholder: "رقم الهاتف", url: "https://wa.me/", notes: ""},
+         {name: "Viber", icon: "💜", placeholder: "رقم فايبر", url: "viber://add?number=", notes: ""},
+         {name: "Telegram", icon: "✈️", placeholder: "معرف تلغرام", url: "https://t.me/", notes: ""},
+         {name: "Instagram", icon: "📸", placeholder: "معرف إنستغرام", url: "https://instagram.com/", notes: ""},
+         {name: "TikTok", icon: "🎶", placeholder: "معرف تيك توك", url: "https://www.tiktok.com/@", notes: ""},
+         {name: "Facebook", icon: "📘", placeholder: "معرف فيسبوك", url: "https://www.facebook.com/", notes: ""},
+         {name: "Messenger", icon: "💬", placeholder: "معرف ماسنجر", url: "https://m.me/", notes: ""},
+         {name: "twitter", icon: "🔞", placeholder: "تويتر", url: "https://twitter.com/", notes: ""},
+         {name: "Discord", icon: "🎮", placeholder: "اسم المستخدم # الرقم", url: "https://discord.com/users/", notes: ""},
+         {name: "Snapchat", icon: "👻", placeholder: "معرف سناب شات", url: "https://www.snapchat.com/add/", notes: ""},
+     ];
+
+     // دالة حفظ المنصات في التخزين المحلي
+     function savePlatforms() {
+         localStorage.setItem('platforms', JSON.stringify(platforms));
+     }
+
+     // دالة استعادة المنصات من التخزين المحلي
+    function loadPlatforms() {
+        const storedPlatforms = localStorage.getItem('platforms');
+        if (storedPlatforms) {
+            platforms = JSON.parse(storedPlatforms);
+       }
+    }
+     // إنشاء الأقسام ديناميكيًا
+     function createSections() {
+        const container = document.getElementById("sections");
+        container.innerHTML = ""; // تنظيف الحاوية قبل الإضافة
+         platforms.forEach((platform, index) => {
+             const section = document.createElement("div");
+            section.className = "section";
+             section.innerHTML = `<h2>${platform.icon} ${platform.name}</h2>
+                <input type="text" id="${platform.name}Input" placeholder="${platform.placeholder}" />
+                <button onclick="navigateTo('${platform.name}', '${platform.url}')">اذهب</button>
+                <button class="edit-button" onclick="openEditPlatformModal(${index})"><i class="fas fa-edit"></i></button>
+            `;
+            container.appendChild(section);
+        });
+        // استدعاء الحركات
+        observeSections();
     }
 
     // التنقل إلى الرابط المناسب
     function navigateTo(name, url) {
-      const input = document.getElementById(`${name}Input`).value.trim();
-      if (!input) {
-        alert("يرجى إدخال المعلومات المطلوبة!");
-        return;
-      }
-      window.location.href = `${url}${input}`;
+        const input = document.getElementById(`${name}Input`).value.trim();
+        const inputElement = document.getElementById(`${name}Input`);
+
+        if (!input) {
+            inputElement.classList.add('error');
+            inputElement.focus();
+            toastr.error("يرجى إدخال المعلومات المطلوبة!");
+            return;
+        }
+        inputElement.classList.remove('error');
+        window.open(`${url}${input}`, '_blank');
     }
 
     // الوضع الليلي
     function toggleDarkMode() {
-      document.body.classList.toggle("dark-mode");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+        document.body.classList.toggle("dark-mode");
+        localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+        toastr.success("تم تغيير الوضع بنجاح!");
     }
 
     // إعادة تعيين الحقول
     function resetInputs() {
-      platforms.forEach(platform => {
-        document.getElementById(`${platform.name}Input`).value = "";
-      });
+        platforms.forEach(platform => {
+            const inputElement = document.getElementById(`${platform.name}Input`);
+            inputElement.value = "";
+            inputElement.classList.remove('error');
+        });
+        toastr.info("تم إعادة تعيين الحقول بنجاح!");
     }
 
     // مراقبة الأقسام وإضافة الحركات
     function observeSections() {
-      const sections = document.querySelectorAll(".section");
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("show");
-          }
+        const sections = document.querySelectorAll(".section");
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+            });
+        }, {threshold: 0.2});
+
+        sections.forEach(section => observer.observe(section));
+    }
+
+    // إضافة منصة جديدة
+    function addPlatform() {
+        const newPlatformName = document.getElementById("newPlatformName");
+        const newPlatformIcon = document.getElementById("newPlatformIcon");
+        const newPlatformPlaceholder = document.getElementById("newPlatformPlaceholder");
+        const newPlatformUrl = document.getElementById("newPlatformUrl");
+
+        const name = newPlatformName.value.trim();
+        const icon = newPlatformIcon.value.trim();
+        const placeholder = newPlatformPlaceholder.value.trim();
+        const url = newPlatformUrl.value.trim();
+
+        let isValid = true;
+        if (!name) {
+            showError(newPlatformName, 'يرجى إدخال اسم المنصة');
+            isValid = false;
+        } else {
+            hideError(newPlatformName);
+        }
+        if (!icon) {
+            showError(newPlatformIcon, 'يرجى إدخال الأيقونة');
+            isValid = false;
+        } else {
+            hideError(newPlatformIcon);
+        }
+        if (!placeholder) {
+            showError(newPlatformPlaceholder, 'يرجى إدخال مثال للمدخل');
+            isValid = false;
+        } else {
+            hideError(newPlatformPlaceholder);
+        }
+        if (!url) {
+            showError(newPlatformUrl, 'يرجى إدخال الرابط');
+            isValid = false;
+        } else {
+            hideError(newPlatformUrl);
+        }
+
+        if (isValid) {
+            platforms.push({
+                name: name,
+                icon: icon,
+                placeholder: placeholder,
+                url: url,
+                notes: ""
+            });
+            savePlatforms();
+            createSections();
+            closeAddPlatformModal();
+            toastr.success("تمت إضافة المنصة بنجاح!");
+        }
+    }
+    // عرض رسالة الخطأ
+    function showError(inputElement, message) {
+        const errorId = inputElement.id + 'Error';
+        document.getElementById(errorId).textContent = message;
+        inputElement.classList.add('error');
+    }
+    // إخفاء رسالة الخطأ
+    function hideError(inputElement) {
+        const errorId = inputElement.id + 'Error';
+        document.getElementById(errorId).textContent = '';
+        inputElement.classList.remove('error');
+    }
+
+    // فتح نموذج إضافة منصة
+    function openAddPlatformModal() {
+        document.getElementById("addPlatformModal").style.display = "block";
+        resetAddPlatformModalInputs();
+    }
+
+    // إغلاق نموذج إضافة منصة
+    function closeAddPlatformModal() {
+        document.getElementById("addPlatformModal").style.display = "none";
+        resetAddPlatformModalInputs();
+    }
+    function resetAddPlatformModalInputs() {
+        document.getElementById("newPlatformName").value = "";
+        document.getElementById("newPlatformIcon").value = "";
+        document.getElementById("newPlatformPlaceholder").value = "";
+        document.getElementById("newPlatformUrl").value = "";
+        hideError(document.getElementById("newPlatformName"));
+        hideError(document.getElementById("newPlatformIcon"));
+        hideError(document.getElementById("newPlatformPlaceholder"));
+        hideError(document.getElementById("newPlatformUrl"));
+    }
+    // فتح نموذج تعديل منصة
+     function openEditPlatformModal(index) {
+        const platform = platforms[index];
+        document.getElementById("editPlatformName").value = platform.name;
+         document.getElementById("editPlatformIcon").value = platform.icon;
+        document.getElementById("editPlatformPlaceholder").value = platform.placeholder;
+       document.getElementById("editPlatformUrl").value = platform.url;
+        document.getElementById("editPlatformNotes").value = platform.notes;
+       document.getElementById("editPlatformModal").setAttribute('data-index', index);
+        document.getElementById("editPlatformModal").style.display = "block";
+        resetEditPlatformModalErrors();
+    }
+    // إغلاق نموذج تعديل منصة
+    function closeEditPlatformModal() {
+       document.getElementById("editPlatformModal").style.display = "none";
+        resetEditPlatformModalInputs();
+        resetEditPlatformModalErrors();
+    }
+
+    function resetEditPlatformModalInputs() {
+        document.getElementById("editPlatformName").value = "";
+         document.getElementById("editPlatformIcon").value = "";
+         document.getElementById("editPlatformPlaceholder").value = "";
+        document.getElementById("editPlatformUrl").value = "";
+         document.getElementById("editPlatformNotes").value ="";
+    }
+    function resetEditPlatformModalErrors() {
+         hideError(document.getElementById("editPlatformName"));
+        hideError(document.getElementById("editPlatformIcon"));
+       hideError(document.getElementById("editPlatformPlaceholder"));
+       hideError(document.getElementById("editPlatformUrl"));
+    }
+    // حفظ تعديلات المنصة
+    function saveEditPlatform() {
+       const index = document.getElementById("editPlatformModal").getAttribute('data-index');
+        const editPlatformName = document.getElementById("editPlatformName");
+         const editPlatformIcon = document.getElementById("editPlatformIcon");
+        const editPlatformPlaceholder = document.getElementById("editPlatformPlaceholder");
+        const editPlatformUrl = document.getElementById("editPlatformUrl");
+       const editPlatformNotes = document.getElementById("editPlatformNotes");
+
+       const name = editPlatformName.value.trim();
+         const icon = editPlatformIcon.value.trim();
+         const placeholder = editPlatformPlaceholder.value.trim();
+         const url = editPlatformUrl.value.trim();
+        const notes = editPlatformNotes.value.trim();
+
+        let isValid = true;
+        if (!name) {
+            showError(editPlatformName, 'يرجى إدخال اسم المنصة');
+            isValid = false;
+        } else {
+           hideError(editPlatformName);
+        }
+        if (!icon) {
+             showError(editPlatformIcon, 'يرجى إدخال الأيقونة');
+            isValid = false;
+        } else {
+           hideError(editPlatformIcon);
+        }
+         if (!placeholder) {
+            showError(editPlatformPlaceholder, 'يرجى إدخال مثال للمدخل');
+            isValid = false;
+       } else {
+           hideError(editPlatformPlaceholder);
+        }
+         if (!url) {
+            showError(editPlatformUrl, 'يرجى إدخال الرابط');
+            isValid = false;
+        } else {
+           hideError(editPlatformUrl);
+        }
+        if (isValid) {
+             platforms[index] = {
+                 name: name,
+                icon: icon,
+                placeholder: placeholder,
+                 url: url,
+                 notes: notes
+            };
+            savePlatforms();
+            createSections();
+            closeEditPlatformModal();
+             toastr.success("تم تعديل المنصة بنجاح!");
+        }
+    }
+
+
+    // فتح نموذج الإعدادات
+     function openSettingsModal() {
+        document.getElementById("settingsModal").style.display = "block";
+     }
+
+    // إغلاق نموذج الإعدادات
+     function closeSettingsModal() {
+         document.getElementById("settingsModal").style.display = "none";
+    }
+   // تعيين الوضع الفاتح
+    function setLightTheme() {
+       document.body.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "false");
+        closeSettingsModal();
+        toastr.info("تم تغيير الوضع إلى الفاتح.");
+    }
+
+    // تعيين الوضع الداكن
+    function setDarkTheme() {
+       document.body.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "true");
+        closeSettingsModal();
+        toastr.info("تم تغيير الوضع إلى الداكن.");
+    }
+    // ترتيب المنصات أبجديا تصاعديا
+    function sortPlatformsByNameAsc() {
+         platforms.sort((a, b) => a.name.localeCompare(b.name));
+        savePlatforms();
+         createSections();
+        closeSettingsModal();
+         toastr.success("تم ترتيب المنصات تصاعدياً!");
+    }
+
+    // ترتيب المنصات أبجديا تنازليا
+    function sortPlatformsByNameDesc() {
+         platforms.sort((a, b) => b.name.localeCompare(a.name));
+        savePlatforms();
+         createSections();
+        closeSettingsModal();
+        toastr.success("تم ترتيب المنصات تنازلياً!");
+    }
+    function openCustomSortModal() {
+        document.getElementById("customSortModal").style.display = "block";
+           const sortablePlatformsList = document.getElementById("sortablePlatforms");
+        sortablePlatformsList.innerHTML = "";
+          platforms.forEach((platform, index) => {
+           const listItem = document.createElement("li");
+           listItem.className = "platform-item";
+          listItem.setAttribute("data-index", index);
+           listItem.innerHTML = `<span>${platform.name}</span>`;
+            sortablePlatformsList.appendChild(listItem);
         });
-      }, { threshold: 0.2 });
+      new Sortable(sortablePlatformsList,{
+         animation: 150,
+      });
 
-      sections.forEach(section => observer.observe(section));
     }
-
-    // التهيئة
-    function init() {
-      createSections();
-      if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark-mode");
-      }
+    function closeCustomSortModal() {
+        document.getElementById("customSortModal").style.display = "none";
     }
+    function saveCustomOrder() {
+       const sortablePlatformsList = document.getElementById("sortablePlatforms");
+        const sortedItems = Array.from(sortablePlatformsList.children);
+        const newOrder = sortedItems.map(item => parseInt(item.getAttribute('data-index')));
+       const sortedPlatforms = newOrder.map(index => platforms[index]);
+        platforms = sortedPlatforms;
+         savePlatforms();
+        createSections();
+        closeCustomSortModal();
+         toastr.success("تم حفظ الترتيب المخصص!");
+   }
 
-    // تنفيذ التهيئة عند التحميل
+    // إعادة تعيين جميع الإعدادات
+    function resetAllSettings() {
+        localStorage.clear();
+        window.location.reload();
+        toastr.warning("تم إعادة تعيين جميع الإعدادات!");
+     }
+
+    // فتح نموذج الاستيراد والتصدير
+   function openImportExportModal() {
+        document.getElementById("importExportModal").style.display = "block";
+    }
+    // اغلاق نموذج الاستيراد والتصدير
+   function closeImportExportModal() {
+        document.getElementById("importExportModal").style.display = "none";
+         document.getElementById("exportTextArea").value = '';
+    }
+    // تصدير المنصات
+    function exportPlatforms() {
+         const json = JSON.stringify(platforms, null, 2);
+        document.getElementById("exportTextArea").value = json;
+        toastr.info("تم تصدير المنصات إلى مربع النص!");
+   }
+   // استيراد المنصات من ملف
+    function importPlatformsFromFile(event) {
+         const file = event.target.files[0];
+        if (file) {
+           const reader = new FileReader();
+             reader.onload = function(e) {
+                try {
+                     const json = e.target.result;
+                   const importedPlatforms = JSON.parse(json);
+                    if (Array.isArray(importedPlatforms)) {
+                         platforms = importedPlatforms;
+                        savePlatforms();
+                         createSections();
+                        closeImportExportModal();
+                       toastr.success("تم استيراد المنصات بنجاح من الملف!");
+                    } else {
+                        toastr.error("تنسيق الملف غير صالح، يجب أن يكون JSON array!");
+                   }
+                 } catch (error) {
+                    toastr.error("حدث خطأ أثناء استيراد المنصات!");
+                   console.error("Error importing platforms:", error);
+               }
+            };
+           reader.readAsText(file);
+        }
+    }
+   // استيراد المنصات من مربع النص
+    function importPlatforms() {
+         const json = document.getElementById("exportTextArea").value;
+         try {
+             const importedPlatforms = JSON.parse(json);
+            if (Array.isArray(importedPlatforms)) {
+                platforms = importedPlatforms;
+                savePlatforms();
+               createSections();
+                closeImportExportModal();
+                toastr.success("تم استيراد المنصات بنجاح!");
+            } else {
+                toastr.error("تنسيق JSON غير صالح، يجب أن يكون JSON array!");
+           }
+         } catch (error) {
+           toastr.error("حدث خطأ أثناء استيراد المنصات!");
+             console.error("Error importing platforms:", error);
+        }
+    }
+   // فتح نموذج البحث
+    function openSearchModal() {
+       document.getElementById("searchModal").style.display = "block";
+          $('#searchFieldSelect').select2({
+               placeholder: "اختر حقل البحث",
+               dir: "rtl",
+           });
+   }
+   // إغلاق نموذج البحث
+    function closeSearchModal() {
+        document.getElementById("searchModal").style.display = "none";
+       document.getElementById("searchInput").value = "";
+         document.getElementById("searchResults").innerHTML= "";
+        $('#searchFieldSelect').val(null).trigger('change');
+    }
+   // البحث عن منصة
+     function searchPlatforms() {
+         const searchTerm = document.getElementById("searchInput").value.trim();
+         const searchField = document.getElementById("searchFieldSelect").value;
+        const resultsContainer = document.getElementById("searchResults");
+       resultsContainer.innerHTML = "";
+        if (!searchTerm) {
+            toastr.warning("يرجى إدخال كلمة البحث!");
+            return;
+       }
+          const filteredPlatforms = platforms.filter(platform => {
+            const searchValue = String(platform[searchField]).toLowerCase();
+             return searchValue.includes(searchTerm.toLowerCase());
+        });
+        if (filteredPlatforms.length === 0) {
+           resultsContainer.innerHTML = "<p>لا توجد نتائج مطابقة.</p>";
+            return;
+         }
+         filteredPlatforms.forEach(platform => {
+           const resultItem = document.createElement("div");
+            resultItem.className = "search-result-item";
+            resultItem.innerHTML = `
+                 <span>الاسم:</span> ${platform.name}<br>
+               <span>الأيقونة:</span> ${platform.icon}<br>
+                <span>مثال الإدخال:</span> ${platform.placeholder}<br>
+              <span>الرابط:</span> ${platform.url}<br>
+                <span>ملاحظات:</span> ${platform.notes}
+           `;
+            resultsContainer.appendChild(resultItem);
+       });
+
+    }
+     // تهيئة لون الخلفية
+    function initColorPicker() {
+         $("#colorPicker").spectrum({
+            type: "color",
+             preferredFormat: "hex",
+           showInput: true,
+            move: function(color) {
+               document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
+            },
+           change: function(color) {
+                 document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
+            },
+       });
+    }
+     // التهيئة
+     function init() {
+        loadPlatforms();
+         createSections();
+        initColorPicker();
+         if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark-mode");
+        }
+         toastr.options = {
+           "closeButton": true,
+             "progressBar": true,
+           "positionClass": "toast-top-right",
+       }
+    }
+     // تنفيذ التهيئة عند التحميل
     window.onload = init;
-  </script>
+</script>
 </body>
 </html>

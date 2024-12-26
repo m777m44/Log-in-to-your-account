@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
         /* إعدادات عامة */
         body {
@@ -28,6 +29,7 @@
             margin: 20px 0;
             color: #fdfdfd;
             text-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            animation: fadeInDown 1s ease-in-out;
         }
 
         .container {
@@ -73,6 +75,7 @@
             background: #fff;
             color: #333;
             font-size: 16px;
+            transition: box-shadow 0.3s ease;
         }
 
         .section input:focus {
@@ -91,15 +94,16 @@
             cursor: pointer;
             transition: transform 0.3s ease, background 0.3s ease;
             margin-right: 5px;
+            position: relative;
         }
 
-         .section .copy-btn {
-             background: linear-gradient(120deg, #4caf50, #66bb6a);
-         }
+        .section .copy-btn {
+            background: linear-gradient(120deg, #4caf50, #66bb6a);
+        }
 
         .section .copy-btn:hover {
-            background: linear-gradient(120deg,  #66bb6a, #4caf50 );
-         }
+            background: linear-gradient(120deg, #66bb6a, #4caf50);
+        }
 
         .section button:hover {
             background: linear-gradient(120deg, #feb47b, #ff7e5f);
@@ -128,6 +132,7 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
+            animation: fadeInUp 1s ease-in-out;
         }
 
         .controls button {
@@ -139,6 +144,7 @@
             cursor: pointer;
             color: #fff;
             transition: background 0.3s ease;
+            position: relative;
         }
 
         .controls .dark-mode-toggle {
@@ -213,6 +219,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             color: #333;
+            animation: zoomIn 0.4s ease-in-out;
         }
 
         .add-platform-modal-content input {
@@ -326,6 +333,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             color: #333;
+            animation: zoomIn 0.4s ease-in-out;
         }
 
         .edit-platform-modal-content input {
@@ -394,6 +402,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             color: #333;
+            animation: zoomIn 0.4s ease-in-out;
         }
 
         .settings-modal-content h2 {
@@ -493,29 +502,31 @@
         }
 
         .settings-modal-content .color-picker-container label {
-             display: block;
+            display: block;
             margin-bottom: 5px;
             color: #333;
-             width: 100%;
-             text-align: center;
+            width: 100%;
+            text-align: center;
 
-         }
-         .settings-modal-content .color-picker-container div{
+        }
+
+        .settings-modal-content .color-picker-container div {
             margin: 10px;
-          }
-         .settings-modal-content .color-picker-container button {
-             width: 20px;
-             height: 20px;
+        }
+
+        .settings-modal-content .color-picker-container button {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             border: 1px solid #ccc;
-             margin: 5px;
-             cursor: pointer;
-             outline: none;
+            margin: 5px;
+            cursor: pointer;
+            outline: none;
         }
-        .settings-modal-content .color-picker-container input {
-          width: auto;
-         }
 
+        .settings-modal-content .color-picker-container input {
+            width: auto;
+        }
 
         /* رسائل الخطأ */
         .error-message {
@@ -553,6 +564,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             color: #333;
+            animation: zoomIn 0.4s ease-in-out;
         }
 
         .import-export-modal-content textarea {
@@ -636,6 +648,7 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             color: #333;
+            animation: zoomIn 0.4s ease-in-out;
         }
 
         .search-modal-content input {
@@ -706,58 +719,105 @@
 
         /* tooltips */
         .tooltip {
-             position: relative;
-          display: inline-block;
+            position: relative;
+            display: inline-block;
+        }
 
-       }
-       .tooltip .tooltiptext{
-           visibility: hidden;
+        .tooltip .tooltiptext {
+            visibility: hidden;
             width: 150px;
             background-color: #333;
-             color: #fff;
+            color: #fff;
             text-align: center;
-             padding: 5px 0;
-           border-radius: 6px;
-           position: absolute;
+            padding: 5px 0;
+            border-radius: 6px;
+            position: absolute;
             z-index: 1;
-            bottom: 125%;
-             left: 50%;
-           margin-left: -75px;
-           opacity: 0;
+            bottom: -50px;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
             transition: opacity 0.3s;
-       }
-       .tooltip:hover .tooltiptext{
+        }
+
+        .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
-       }
+        }
+        /* End tooltips */
+        .random-color-btn {
+            background: linear-gradient(120deg, #9b59b6, #8e44ad);
+        }
+
+        .random-color-btn:hover {
+            background: linear-gradient(120deg, #8e44ad, #9b59b6);
+        }
+        .custom-color-btn {
+            background: linear-gradient(120deg, #3498db, #2980b9);
+        }
+
+        .custom-color-btn:hover {
+            background: linear-gradient(120deg, #2980b9, #3498db);
+        }
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="controls">
-         <button class="tooltip dark-mode-toggle" onclick="toggleDarkMode()">
-           <i class="fas fa-moon"></i>
+        <button class="tooltip dark-mode-toggle" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
             <span class="tooltiptext">الوضع الليلي</span>
-         </button>
-         <button class="tooltip reset-btn" onclick="resetInputs()">
-           <i class="fas fa-sync-alt"></i>
-          <span class="tooltiptext">إعادة تعيين الحقول</span>
-          </button>
+        </button>
+        <button class="tooltip reset-btn" onclick="resetInputs()">
+            <i class="fas fa-sync-alt"></i>
+            <span class="tooltiptext">إعادة تعيين الحقول</span>
+        </button>
         <button class="tooltip add-platform-btn" onclick="openAddPlatformModal()">
             <i class="fas fa-plus"></i>
             <span class="tooltiptext">إضافة منصة</span>
-         </button>
+        </button>
         <button class="tooltip settings-btn" onclick="openSettingsModal()">
-          <i class="fas fa-cog"></i>
-          <span class="tooltiptext">الإعدادات</span>
-           </button>
-         <button class="tooltip import-export-btn" onclick="openImportExportModal()">
+            <i class="fas fa-cog"></i>
+            <span class="tooltiptext">الإعدادات</span>
+        </button>
+        <button class="tooltip import-export-btn" onclick="openImportExportModal()">
             <i class="fas fa-upload"></i>
-           <span class="tooltiptext">استيراد وتصدير</span>
-           </button>
+            <span class="tooltiptext">استيراد وتصدير</span>
+        </button>
         <button class="tooltip search-btn" onclick="openSearchModal()">
-             <i class="fas fa-search"></i>
-             <span class="tooltiptext">بحث</span>
+            <i class="fas fa-search"></i>
+            <span class="tooltiptext">بحث</span>
         </button>
 
     </div>
@@ -795,9 +855,9 @@
             <input type="text" id="editPlatformUrl" placeholder="عنوان URL (مثال: https://example.com/)" />
             <span id="editPlatformUrlError" class="error-message"></span>
             <textarea id="editPlatformNotes" placeholder="الملاحظات"></textarea>
-            <input type="text" id="editPlatformColor" placeholder="لون المنصة (مثال: #ff7e5f)" value="#ff7e5f"/>
-             <span id="editPlatformColorError" class="error-message"></span>
-             <button onclick="saveEditPlatform()">حفظ التعديلات</button>
+            <input type="text" id="editPlatformColor" placeholder="لون المنصة (مثال: #ff7e5f)" value="#ff7e5f" />
+            <span id="editPlatformColorError" class="error-message"></span>
+            <button onclick="saveEditPlatform()">حفظ التعديلات</button>
         </div>
     </div>
 
@@ -814,25 +874,29 @@
                 <button class="sort-name-desc" onclick="sortPlatformsByNameDesc()">ترتيب الأسماء تنازلياً</button>
                 <button class="sort-custom" onclick="openCustomSortModal()">ترتيب مخصص</button>
             </div>
-           <div class="color-picker-container">
+            <div class="color-picker-container">
                 <label for="colorPicker">تخصيص لون الخلفية:</label>
                 <div>
-                <input type="text" id="colorPicker" value="#1e3c72" />
-                 </div>
+                    <input type="text" id="colorPicker" value="#1e3c72" />
+                </div>
                 <div>
-                   <button style="background-color:#1e3c72" onclick="selectPredefinedColor('#1e3c72')"></button>
-                 <button style="background-color:#141e30" onclick="selectPredefinedColor('#141e30')"></button>
-                  <button style="background-color:#2c3e50" onclick="selectPredefinedColor('#2c3e50')"></button>
-                  <button style="background-color:#34495e" onclick="selectPredefinedColor('#34495e')"></button>
-                   <button style="background-color:#777" onclick="selectPredefinedColor('#777')"></button>
-                   <button style="background-color:#e74c3c" onclick="selectPredefinedColor('#e74c3c')"></button>
-                     <button style="background-color:#8e44ad" onclick="selectPredefinedColor('#8e44ad')"></button>
-                     <button style="background-color:#2980b9" onclick="selectPredefinedColor('#2980b9')"></button>
+                    <button style="background-color:#1e3c72" onclick="selectPredefinedColor('#1e3c72')"></button>
+                    <button style="background-color:#141e30" onclick="selectPredefinedColor('#141e30')"></button>
+                    <button style="background-color:#2c3e50" onclick="selectPredefinedColor('#2c3e50')"></button>
+                    <button style="background-color:#34495e" onclick="selectPredefinedColor('#34495e')"></button>
+                    <button style="background-color:#777"    onclick="selectPredefinedColor('#777')"></button>
+                    <button style="background-color:#e74c3c" onclick="selectPredefinedColor('#e74c3c')"></button>
+                    <button style="background-color:#8e44ad" onclick="selectPredefinedColor('#8e44ad')"></button>
+                    <button style="background-color:#2980b9" onclick="selectPredefinedColor('#2980b9')"></button>
                     <button style="background-color:#2ecc71" onclick="selectPredefinedColor('#2ecc71')"></button>
 
                 </div>
 
             </div>
+             <button class="random-color-btn" onclick="setRandomBackground()">تلوين عشوائي للخلفية</button>
+             <button class="custom-color-btn" onclick="openCustomColorModalBackground()">تلوين مخصص للخلفية</button>
+            <button class="random-color-btn" onclick="setRandomPlatformColors()">تلوين عشوائي للمنصات</button>
+             <button class="custom-color-btn" onclick="openCustomColorModal()">تلوين مخصص للمنصات</button>
              <button class="reset-settings" onclick="resetAllSettings()">إعادة تعيين الإعدادات</button>
         </div>
     </div>
@@ -845,6 +909,25 @@
             <button onclick="saveCustomOrder()">حفظ الترتيب</button>
         </div>
     </div>
+    <div id="customColorModal" class="settings-modal">
+        <div class="settings-modal-content">
+            <span class="close" onclick="closeCustomColorModal()">×</span>
+            <h2>تلوين مخصص للمنصات</h2>
+            <ul id="customColorPlatforms">
+            </ul>
+             <button onclick="saveCustomColors()">حفظ الألوان</button>
+        </div>
+    </div>
+      <div id="customColorModalBackground" class="settings-modal">
+        <div class="settings-modal-content">
+             <span class="close" onclick="closeCustomColorModalBackground()">×</span>
+              <h2>تلوين مخصص للخلفية</h2>
+                 <label>اختر لونًا مخصصًا:</label>
+                   <input type="text" id="customBackgroundInput" value="#1e3c72" style="width: auto;"  />
+
+             <button onclick="saveCustomBackgroundColor()">حفظ لون الخلفية</button>
+        </div>
+     </div>
     <div id="importExportModal" class="import-export-modal">
         <div class="import-export-modal-content">
             <span class="close" onclick="closeImportExportModal()">×</span>
@@ -867,7 +950,7 @@
                 <option value="name">اسم المنصة</option>
                 <option value="placeholder">مثال الإدخال</option>
                 <option value="url">الرابط</option>
-                 <option value="notes">الملاحظات</option>
+                <option value="notes">الملاحظات</option>
 
             </select>
             <button onclick="searchPlatforms()">بحث</button>
@@ -881,7 +964,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
     <script>
         // المنصات الاجتماعية
         let platforms = [
@@ -891,20 +974,20 @@
             { name: "Instagram", icon: "📸", placeholder: "معرف إنستغرام", url: "https://instagram.com/", notes: "", color: "#E1306C" },
             { name: "TikTok", icon: "🎶", placeholder: "معرف تيك توك", url: "https://www.tiktok.com/@", notes: "", color: "#000000" },
             { name: "Facebook", icon: "📘", placeholder: "معرف فيسبوك", url: "https://www.facebook.com/", notes: "", color: "#1877F2" },
-             { name: "Messenger", icon: "💬", placeholder: "معرف ماسنجر", url: "https://m.me/", notes: "", color: "#0078FF" },
+            { name: "Messenger", icon: "💬", placeholder: "معرف ماسنجر", url: "https://m.me/", notes: "", color: "#0078FF" },
             { name: "twitter", icon: "🔞", placeholder: "تويتر", url: "https://twitter.com/", notes: "", color: "#1DA1F2" },
-             { name: "Discord", icon: "🎮", placeholder: "اسم المستخدم # الرقم", url: "https://discord.com/users/", notes: "", color: "#5865F2" },
-             { name: "Snapchat", icon: "👻", placeholder: "معرف سناب شات", url: "https://www.snapchat.com/add/", notes: "", color: "#FFFC00" },
+            { name: "Discord", icon: "🎮", placeholder: "اسم المستخدم # الرقم", url: "https://discord.com/users/", notes: "", color: "#5865F2" },
+            { name: "Snapchat", icon: "👻", placeholder: "معرف سناب شات", url: "https://www.snapchat.com/add/", notes: "", color: "#FFFC00" },
         ];
-           // تفضيلات المستخدم
+        // تفضيلات المستخدم
         let userSettings = {
             darkMode: localStorage.getItem('darkMode') === 'true' || false,
-           backgroundColor: localStorage.getItem('backgroundColor') || '#1e3c72',
+            backgroundColor: localStorage.getItem('backgroundColor') || '#1e3c72',
         };
-           // دالة لحفظ تفضيلات المستخدم في التخزين المحلي
-           function saveUserSettings() {
-           localStorage.setItem('darkMode', userSettings.darkMode);
-          localStorage.setItem('backgroundColor', userSettings.backgroundColor);
+        // دالة لحفظ تفضيلات المستخدم في التخزين المحلي
+        function saveUserSettings() {
+            localStorage.setItem('darkMode', userSettings.darkMode);
+            localStorage.setItem('backgroundColor', userSettings.backgroundColor);
         }
 
 
@@ -922,91 +1005,91 @@
         }
         // إنشاء الأقسام ديناميكيًا
         function createSections() {
-             const container = document.getElementById("sections");
-             container.innerHTML = ""; // تنظيف الحاوية قبل الإضافة
+            const container = document.getElementById("sections");
+            container.innerHTML = ""; // تنظيف الحاوية قبل الإضافة
             platforms.forEach((platform, index) => {
-               const section = document.createElement("div");
-                 section.className = "section";
-                section.style.background =  `rgba(255,255,255, 0.1)` ; // default color
-                  if(userSettings.darkMode){
-                      section.style.background =  `rgba(0, 0, 0, 0.7)`
+                const section = document.createElement("div");
+                section.className = "section";
+                section.style.background = `rgba(255,255,255, 0.1)`; // default color
+                if (userSettings.darkMode) {
+                    section.style.background = `rgba(0, 0, 0, 0.7)`
                 }
-               section.style.borderLeft = `5px solid ${platform.color}`
+                section.style.borderLeft = `5px solid ${platform.color}`
 
-               section.innerHTML = `<h2>${platform.icon} ${platform.name}</h2>
+                section.innerHTML = `<h2>${platform.icon} ${platform.name}</h2>
                    <input type="text" id="${platform.name}Input" placeholder="${platform.placeholder}" />
                     <button onclick="navigateTo('${platform.name}', '${platform.url}')">اذهب</button>
                    <button class="copy-btn" onclick="copyToClipboard('${platform.name}', '${platform.url}')"><i class="fas fa-copy"></i></button>
                    <button class="edit-button" onclick="openEditPlatformModal(${index})"><i class="fas fa-edit"></i></button>
                  `;
-               container.appendChild(section);
+                container.appendChild(section);
 
             });
             // استدعاء الحركات
-           observeSections();
-         }
-          // نسخ الى الحافظه
-          function copyToClipboard(name, url){
-             const input = document.getElementById(`${name}Input`).value.trim();
-             if(!input){
-                 toastr.error("لا يمكن النسخ, يرجى ادخال البيانات أولاً");
-                 return;
-             }
-              const link = `${url}${input}`;
-              navigator.clipboard.writeText(link).then(() => {
-                   toastr.success("تم نسخ الرابط الى الحافظة");
-             })
-             .catch(err => {
-                console.error("Failed to copy: ", err);
-                toastr.error("فشل نسخ الرابط!");
-             })
-         }
+            observeSections();
+        }
+        // نسخ الى الحافظه
+        function copyToClipboard(name, url) {
+            const input = document.getElementById(`${name}Input`).value.trim();
+            if (!input) {
+                toastr.error("لا يمكن النسخ, يرجى ادخال البيانات أولاً");
+                return;
+            }
+            const link = `${url}${input}`;
+            navigator.clipboard.writeText(link).then(() => {
+                toastr.success("تم نسخ الرابط الى الحافظة");
+            })
+                .catch(err => {
+                    console.error("Failed to copy: ", err);
+                    toastr.error("فشل نسخ الرابط!");
+                })
+        }
 
 
         // التنقل إلى الرابط المناسب
-         function navigateTo(name, url) {
-             const input = document.getElementById(`${name}Input`).value.trim();
-             const inputElement = document.getElementById(`${name}Input`);
+        function navigateTo(name, url) {
+            const input = document.getElementById(`${name}Input`).value.trim();
+            const inputElement = document.getElementById(`${name}Input`);
 
-             if (!input) {
+            if (!input) {
                 inputElement.classList.add('error');
-                 inputElement.focus();
-                 toastr.error("يرجى إدخال المعلومات المطلوبة!");
-                 return;
+                inputElement.focus();
+                toastr.error("يرجى إدخال المعلومات المطلوبة!");
+                return;
             }
             inputElement.classList.remove('error');
             window.open(`${url}${input}`, '_blank');
-         }
+        }
 
         // الوضع الليلي
         function toggleDarkMode() {
-           userSettings.darkMode = !userSettings.darkMode;
+            userSettings.darkMode = !userSettings.darkMode;
             document.body.classList.toggle("dark-mode");
-             saveUserSettings();
-             updateAppColors();
+            saveUserSettings();
+            updateAppColors();
             toastr.success("تم تغيير الوضع بنجاح!");
 
-       }
+        }
 
-       function updateAppColors(){
-           const sections = document.querySelectorAll('.section');
+        function updateAppColors() {
+            const sections = document.querySelectorAll('.section');
             if (userSettings.darkMode) {
-               document.body.classList.add("dark-mode");
-              sections.forEach(section =>{
-                  section.style.background = `rgba(0, 0, 0, 0.7)`;
-               })
-          }else {
+                document.body.classList.add("dark-mode");
+                sections.forEach(section => {
+                    section.style.background = `rgba(0, 0, 0, 0.7)`;
+                })
+            } else {
                 document.body.classList.remove("dark-mode");
-                 sections.forEach(section =>{
+                sections.forEach(section => {
                     section.style.background = `rgba(255,255,255,0.1)`;
                 })
-           }
+            }
         }
 
 
         // إعادة تعيين الحقول
         function resetInputs() {
-           platforms.forEach(platform => {
+            platforms.forEach(platform => {
                 const inputElement = document.getElementById(`${platform.name}Input`);
                 inputElement.value = "";
                 inputElement.classList.remove('error');
@@ -1015,353 +1098,351 @@
         }
 
         // مراقبة الأقسام وإضافة الحركات
-       function observeSections() {
+        function observeSections() {
             const sections = document.querySelectorAll(".section");
-           const observer = new IntersectionObserver((entries) => {
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                   if (entry.isIntersecting) {
-                       entry.target.classList.add("show");
-                   }
-               });
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("show");
+                    }
+                });
             }, { threshold: 0.2 });
 
             sections.forEach(section => observer.observe(section));
         }
 
-         function validateInput(inputElement, message, validationFn) {
-              const value = inputElement.value.trim();
-              if (!validationFn(value)) {
-                   showError(inputElement, message);
-                 return false;
+        function validateInput(inputElement, message, validationFn) {
+            const value = inputElement.value.trim();
+            if (!validationFn(value)) {
+                showError(inputElement, message);
+                return false;
             } else {
-                 hideError(inputElement);
-                  return true;
-           }
-       }
+                hideError(inputElement);
+                return true;
+            }
+        }
 
-         // إضافة منصة جديدة
-       function addPlatform() {
+        // إضافة منصة جديدة
+        function addPlatform() {
             const newPlatformName = document.getElementById("newPlatformName");
-             const newPlatformIcon = document.getElementById("newPlatformIcon");
+            const newPlatformIcon = document.getElementById("newPlatformIcon");
             const newPlatformPlaceholder = document.getElementById("newPlatformPlaceholder");
-           const newPlatformUrl = document.getElementById("newPlatformUrl");
-            const color ="#ff7e5f";
-             let isValid = true;
+            const newPlatformUrl = document.getElementById("newPlatformUrl");
+             const color = getRandomColor();
+            let isValid = true;
             isValid = validateInput(newPlatformName, 'يرجى إدخال اسم المنصة', value => value !== "") && isValid;
-             isValid = validateInput(newPlatformIcon, 'يرجى إدخال الأيقونة', value => value !== "") && isValid;
+            isValid = validateInput(newPlatformIcon, 'يرجى إدخال الأيقونة', value => value !== "") && isValid;
             isValid = validateInput(newPlatformPlaceholder, 'يرجى إدخال مثال للمدخل', value => value !== "") && isValid;
-           isValid = validateInput(newPlatformUrl, 'يرجى إدخال الرابط', value => value !== "" ) && isValid;
+            isValid = validateInput(newPlatformUrl, 'يرجى إدخال الرابط', value => value !== "") && isValid;
 
-          if (isValid) {
-             platforms.push({
+            if (isValid) {
+                platforms.push({
                     name: newPlatformName.value.trim(),
-                   icon: newPlatformIcon.value.trim(),
+                    icon: newPlatformIcon.value.trim(),
                     placeholder: newPlatformPlaceholder.value.trim(),
                     url: newPlatformUrl.value.trim(),
-                   notes: "",
-                    color: color,
+                    notes: "",
+                   color: color,
                 });
                 savePlatforms();
                 createSections();
-               closeAddPlatformModal();
+                closeAddPlatformModal();
                 toastr.success("تمت إضافة المنصة بنجاح!");
-           }
-         }
-         // عرض رسالة الخطأ
-         function showError(inputElement, message) {
-           const errorId = inputElement.id + 'Error';
+            }
+        }
+        // عرض رسالة الخطأ
+        function showError(inputElement, message) {
+            const errorId = inputElement.id + 'Error';
             document.getElementById(errorId).textContent = message;
             inputElement.classList.add('error');
-         }
+        }
         // إخفاء رسالة الخطأ
-       function hideError(inputElement) {
+        function hideError(inputElement) {
             const errorId = inputElement.id + 'Error';
             document.getElementById(errorId).textContent = '';
-             inputElement.classList.remove('error');
+            inputElement.classList.remove('error');
         }
 
-         // فتح نموذج إضافة منصة
+        // فتح نموذج إضافة منصة
         function openAddPlatformModal() {
             document.getElementById("addPlatformModal").style.display = "block";
             resetAddPlatformModalInputs();
-         }
+        }
 
-         // إغلاق نموذج إضافة منصة
-         function closeAddPlatformModal() {
+        // إغلاق نموذج إضافة منصة
+        function closeAddPlatformModal() {
             document.getElementById("addPlatformModal").style.display = "none";
-             resetAddPlatformModalInputs();
-         }
+            resetAddPlatformModalInputs();
+        }
 
-       function resetAddPlatformModalInputs() {
+        function resetAddPlatformModalInputs() {
             document.getElementById("newPlatformName").value = "";
             document.getElementById("newPlatformIcon").value = "";
-             document.getElementById("newPlatformPlaceholder").value = "";
+            document.getElementById("newPlatformPlaceholder").value = "";
             document.getElementById("newPlatformUrl").value = "";
-             hideError(document.getElementById("newPlatformName"));
-           hideError(document.getElementById("newPlatformIcon"));
+            hideError(document.getElementById("newPlatformName"));
+            hideError(document.getElementById("newPlatformIcon"));
             hideError(document.getElementById("newPlatformPlaceholder"));
             hideError(document.getElementById("newPlatformUrl"));
-       }
-         // فتح نموذج تعديل منصة
-         function openEditPlatformModal(index) {
-           const platform = platforms[index];
+        }
+        // فتح نموذج تعديل منصة
+        function openEditPlatformModal(index) {
+            const platform = platforms[index];
             document.getElementById("editPlatformName").value = platform.name;
             document.getElementById("editPlatformIcon").value = platform.icon;
             document.getElementById("editPlatformPlaceholder").value = platform.placeholder;
-           document.getElementById("editPlatformUrl").value = platform.url;
+            document.getElementById("editPlatformUrl").value = platform.url;
             document.getElementById("editPlatformNotes").value = platform.notes;
              document.getElementById("editPlatformColor").value = platform.color;
-             document.getElementById("editPlatformModal").setAttribute('data-index', index);
+            document.getElementById("editPlatformModal").setAttribute('data-index', index);
             document.getElementById("editPlatformModal").style.display = "block";
-           resetEditPlatformModalErrors();
-         }
-         // إغلاق نموذج تعديل منصة
+            resetEditPlatformModalErrors();
+        }
+        // إغلاق نموذج تعديل منصة
         function closeEditPlatformModal() {
-           document.getElementById("editPlatformModal").style.display = "none";
+            document.getElementById("editPlatformModal").style.display = "none";
             resetEditPlatformModalInputs();
-             resetEditPlatformModalErrors();
-         }
+            resetEditPlatformModalErrors();
+        }
 
         function resetEditPlatformModalInputs() {
-             document.getElementById("editPlatformName").value = "";
+            document.getElementById("editPlatformName").value = "";
             document.getElementById("editPlatformIcon").value = "";
-             document.getElementById("editPlatformPlaceholder").value = "";
-             document.getElementById("editPlatformUrl").value = "";
-           document.getElementById("editPlatformNotes").value = "";
-             document.getElementById("editPlatformColor").value = "";
+            document.getElementById("editPlatformPlaceholder").value = "";
+            document.getElementById("editPlatformUrl").value = "";
+            document.getElementById("editPlatformNotes").value = "";
+           document.getElementById("editPlatformColor").value = "";
 
         }
-         function resetEditPlatformModalErrors() {
+        function resetEditPlatformModalErrors() {
             hideError(document.getElementById("editPlatformName"));
-           hideError(document.getElementById("editPlatformIcon"));
+            hideError(document.getElementById("editPlatformIcon"));
             hideError(document.getElementById("editPlatformPlaceholder"));
             hideError(document.getElementById("editPlatformUrl"));
-           hideError(document.getElementById("editPlatformColor"));
+             hideError(document.getElementById("editPlatformColor"));
 
-         }
-         // حفظ تعديلات المنصة
-       function saveEditPlatform() {
-           const index = document.getElementById("editPlatformModal").getAttribute('data-index');
-           const editPlatformName = document.getElementById("editPlatformName");
-           const editPlatformIcon = document.getElementById("editPlatformIcon");
+        }
+        // حفظ تعديلات المنصة
+        function saveEditPlatform() {
+            const index = document.getElementById("editPlatformModal").getAttribute('data-index');
+            const editPlatformName = document.getElementById("editPlatformName");
+            const editPlatformIcon = document.getElementById("editPlatformIcon");
             const editPlatformPlaceholder = document.getElementById("editPlatformPlaceholder");
             const editPlatformUrl = document.getElementById("editPlatformUrl");
-           const editPlatformNotes = document.getElementById("editPlatformNotes");
-           const editPlatformColor = document.getElementById("editPlatformColor");
+             const editPlatformNotes = document.getElementById("editPlatformNotes");
+             const editPlatformColor = document.getElementById("editPlatformColor");
 
 
             let isValid = true;
 
-            isValid = validateInput(editPlatformName, 'يرجى إدخال اسم المنصة', value => value !== "") && isValid;
+             isValid = validateInput(editPlatformName, 'يرجى إدخال اسم المنصة', value => value !== "") && isValid;
              isValid = validateInput(editPlatformIcon, 'يرجى إدخال الأيقونة', value => value !== "") && isValid;
-            isValid = validateInput(editPlatformPlaceholder, 'يرجى إدخال مثال للمدخل', value => value !== "") && isValid;
+              isValid = validateInput(editPlatformPlaceholder, 'يرجى إدخال مثال للمدخل', value => value !== "") && isValid;
             isValid = validateInput(editPlatformUrl, 'يرجى إدخال الرابط', value => value !== "") && isValid;
-            isValid = validateInput(editPlatformColor, "يرجى إدخال لون", value => /^#([0-9a-f]{3}){1,2}$/i.test(value)) && isValid;
-
-
+             isValid = validateInput(editPlatformColor, "يرجى إدخال لون", value => /^#([0-9a-f]{3}){1,2}$/i.test(value)) && isValid;
 
             if (isValid) {
                 platforms[index] = {
-                   name: editPlatformName.value.trim(),
+                    name: editPlatformName.value.trim(),
                     icon: editPlatformIcon.value.trim(),
                    placeholder: editPlatformPlaceholder.value.trim(),
-                   url: editPlatformUrl.value.trim(),
-                  notes: editPlatformNotes.value.trim(),
-                   color: editPlatformColor.value.trim(),
-
-               };
+                    url: editPlatformUrl.value.trim(),
+                     notes: editPlatformNotes.value.trim(),
+                     color: editPlatformColor.value.trim(),
+                };
                 savePlatforms();
                 createSections();
-                 closeEditPlatformModal();
+                closeEditPlatformModal();
                 toastr.success("تم تعديل المنصة بنجاح!");
-           }
-       }
+            }
+        }
 
         // فتح نموذج الإعدادات
         function openSettingsModal() {
             document.getElementById("settingsModal").style.display = "block";
-         }
+        }
 
         // إغلاق نموذج الإعدادات
         function closeSettingsModal() {
-             document.getElementById("settingsModal").style.display = "none";
-         }
+            document.getElementById("settingsModal").style.display = "none";
+        }
         // تعيين الوضع الفاتح
-       function setLightTheme() {
-           userSettings.darkMode= false;
-             saveUserSettings();
-           updateAppColors();
-             closeSettingsModal();
-             toastr.info("تم تغيير الوضع إلى الفاتح.");
-       }
+        function setLightTheme() {
+            userSettings.darkMode = false;
+            saveUserSettings();
+            updateAppColors();
+            closeSettingsModal();
+            toastr.info("تم تغيير الوضع إلى الفاتح.");
+        }
 
         // تعيين الوضع الداكن
         function setDarkTheme() {
-           userSettings.darkMode= true;
-           saveUserSettings();
-          updateAppColors();
-             closeSettingsModal();
-             toastr.info("تم تغيير الوضع إلى الداكن.");
+            userSettings.darkMode = true;
+            saveUserSettings();
+            updateAppColors();
+            closeSettingsModal();
+            toastr.info("تم تغيير الوضع إلى الداكن.");
         }
-         // ترتيب المنصات أبجديا تصاعديا
-       function sortPlatformsByNameAsc() {
+        // ترتيب المنصات أبجديا تصاعديا
+        function sortPlatformsByNameAsc() {
             platforms.sort((a, b) => a.name.localeCompare(b.name));
-           savePlatforms();
-             createSections();
-           closeSettingsModal();
-             toastr.success("تم ترتيب المنصات تصاعدياً!");
+            savePlatforms();
+            createSections();
+            closeSettingsModal();
+            toastr.success("تم ترتيب المنصات تصاعدياً!");
         }
 
         // ترتيب المنصات أبجديا تنازليا
         function sortPlatformsByNameDesc() {
-           platforms.sort((a, b) => b.name.localeCompare(a.name));
-           savePlatforms();
+            platforms.sort((a, b) => b.name.localeCompare(a.name));
+            savePlatforms();
             createSections();
-             closeSettingsModal();
-           toastr.success("تم ترتيب المنصات تنازلياً!");
-       }
+            closeSettingsModal();
+            toastr.success("تم ترتيب المنصات تنازلياً!");
+        }
 
-         function openCustomSortModal() {
-           document.getElementById("customSortModal").style.display = "block";
-              const sortablePlatformsList = document.getElementById("sortablePlatforms");
+        function openCustomSortModal() {
+            document.getElementById("customSortModal").style.display = "block";
+            const sortablePlatformsList = document.getElementById("sortablePlatforms");
             sortablePlatformsList.innerHTML = "";
-             platforms.forEach((platform, index) => {
-               const listItem = document.createElement("li");
+            platforms.forEach((platform, index) => {
+                const listItem = document.createElement("li");
                 listItem.className = "platform-item";
-               listItem.setAttribute("data-index", index);
-               listItem.innerHTML = `<span>${platform.name}</span>`;
-               sortablePlatformsList.appendChild(listItem);
-             });
-             new Sortable(sortablePlatformsList, {
+                listItem.setAttribute("data-index", index);
+                listItem.innerHTML = `<span>${platform.name}</span>`;
+                sortablePlatformsList.appendChild(listItem);
+            });
+            new Sortable(sortablePlatformsList, {
                 animation: 150,
             });
 
-         }
+        }
 
-       function closeCustomSortModal() {
-           document.getElementById("customSortModal").style.display = "none";
+        function closeCustomSortModal() {
+            document.getElementById("customSortModal").style.display = "none";
         }
         function saveCustomOrder() {
-           const sortablePlatformsList = document.getElementById("sortablePlatforms");
+            const sortablePlatformsList = document.getElementById("sortablePlatforms");
             const sortedItems = Array.from(sortablePlatformsList.children);
-             const newOrder = sortedItems.map(item => parseInt(item.getAttribute('data-index')));
+            const newOrder = sortedItems.map(item => parseInt(item.getAttribute('data-index')));
             const sortedPlatforms = newOrder.map(index => platforms[index]);
-           platforms = sortedPlatforms;
-              savePlatforms();
-              createSections();
+            platforms = sortedPlatforms;
+            savePlatforms();
+            createSections();
             closeCustomSortModal();
             toastr.success("تم حفظ الترتيب المخصص!");
-       }
-          function selectPredefinedColor(color){
-             userSettings.backgroundColor = color;
+        }
+          function selectPredefinedColor(color) {
+            userSettings.backgroundColor = color;
               saveUserSettings();
               document.body.style.background = `linear-gradient(135deg, ${color}, #2a5298)`;
               $("#colorPicker").spectrum("set", color);
 
-        }
+          }
 
-         // إعادة تعيين جميع الإعدادات
-         function resetAllSettings() {
+
+        // إعادة تعيين جميع الإعدادات
+        function resetAllSettings() {
             localStorage.clear();
             window.location.reload();
-             toastr.warning("تم إعادة تعيين جميع الإعدادات!");
-         }
+            toastr.warning("تم إعادة تعيين جميع الإعدادات!");
+        }
 
         // فتح نموذج الاستيراد والتصدير
         function openImportExportModal() {
             document.getElementById("importExportModal").style.display = "block";
-       }
-       // اغلاق نموذج الاستيراد والتصدير
-         function closeImportExportModal() {
-           document.getElementById("importExportModal").style.display = "none";
+        }
+        // اغلاق نموذج الاستيراد والتصدير
+        function closeImportExportModal() {
+            document.getElementById("importExportModal").style.display = "none";
             document.getElementById("exportTextArea").value = '';
         }
-       // تصدير المنصات
-         function exportPlatforms() {
-             const json = JSON.stringify(platforms, null, 2);
+        // تصدير المنصات
+        function exportPlatforms() {
+            const json = JSON.stringify(platforms, null, 2);
             document.getElementById("exportTextArea").value = json;
             toastr.info("تم تصدير المنصات إلى مربع النص!");
-         }
+        }
         // استيراد المنصات من ملف
         function importPlatformsFromFile(event) {
-             const file = event.target.files[0];
+            const file = event.target.files[0];
             if (file) {
-              const reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = function (e) {
                     try {
-                         const json = e.target.result;
+                        const json = e.target.result;
                         const importedPlatforms = JSON.parse(json);
                         if (Array.isArray(importedPlatforms)) {
-                             platforms = importedPlatforms;
-                             savePlatforms();
+                            platforms = importedPlatforms;
+                            savePlatforms();
                             createSections();
                             closeImportExportModal();
-                             toastr.success("تم استيراد المنصات بنجاح من الملف!");
-                         } else {
-                           toastr.error("تنسيق الملف غير صالح، يجب أن يكون JSON array!");
+                            toastr.success("تم استيراد المنصات بنجاح من الملف!");
+                        } else {
+                            toastr.error("تنسيق الملف غير صالح، يجب أن يكون JSON array!");
                         }
-                   } catch (error) {
+                    } catch (error) {
                         toastr.error("حدث خطأ أثناء استيراد المنصات!");
                         console.error("Error importing platforms:", error);
-                   }
-              };
-               reader.readAsText(file);
-           }
+                    }
+                };
+                reader.readAsText(file);
+            }
         }
         // استيراد المنصات من مربع النص
         function importPlatforms() {
             const json = document.getElementById("exportTextArea").value;
-             try {
+            try {
                 const importedPlatforms = JSON.parse(json);
                 if (Array.isArray(importedPlatforms)) {
-                     platforms = importedPlatforms;
-                     savePlatforms();
-                   createSections();
+                    platforms = importedPlatforms;
+                    savePlatforms();
+                    createSections();
                     closeImportExportModal();
-                     toastr.success("تم استيراد المنصات بنجاح!");
-               } else {
-                   toastr.error("تنسيق JSON غير صالح، يجب أن يكون JSON array!");
-                 }
+                    toastr.success("تم استيراد المنصات بنجاح!");
+                } else {
+                    toastr.error("تنسيق JSON غير صالح، يجب أن يكون JSON array!");
+                }
             } catch (error) {
                 toastr.error("حدث خطأ أثناء استيراد المنصات!");
                 console.error("Error importing platforms:", error);
             }
-       }
+        }
         // فتح نموذج البحث
-         function openSearchModal() {
+        function openSearchModal() {
             document.getElementById("searchModal").style.display = "block";
-             $('#searchFieldSelect').select2({
-               placeholder: "اختر حقل البحث",
-                 dir: "rtl",
-             });
+            $('#searchFieldSelect').select2({
+                placeholder: "اختر حقل البحث",
+                dir: "rtl",
+            });
         }
-         // إغلاق نموذج البحث
-         function closeSearchModal() {
+        // إغلاق نموذج البحث
+        function closeSearchModal() {
             document.getElementById("searchModal").style.display = "none";
-             document.getElementById("searchInput").value = "";
-             document.getElementById("searchResults").innerHTML = "";
-              $('#searchFieldSelect').val(null).trigger('change');
+            document.getElementById("searchInput").value = "";
+            document.getElementById("searchResults").innerHTML = "";
+            $('#searchFieldSelect').val(null).trigger('change');
         }
-       // البحث عن منصة
-         function searchPlatforms() {
-           const searchTerm = document.getElementById("searchInput").value.trim();
+        // البحث عن منصة
+        function searchPlatforms() {
+            const searchTerm = document.getElementById("searchInput").value.trim();
             const searchField = document.getElementById("searchFieldSelect").value;
             const resultsContainer = document.getElementById("searchResults");
-             resultsContainer.innerHTML = "";
-           if (!searchTerm) {
-              toastr.warning("يرجى إدخال كلمة البحث!");
-               return;
-           }
-           const filteredPlatforms = platforms.filter(platform => {
+            resultsContainer.innerHTML = "";
+            if (!searchTerm) {
+                toastr.warning("يرجى إدخال كلمة البحث!");
+                return;
+            }
+            const filteredPlatforms = platforms.filter(platform => {
                 const searchValue = String(platform[searchField]).toLowerCase();
-              return searchValue.includes(searchTerm.toLowerCase());
+                return searchValue.includes(searchTerm.toLowerCase());
             });
-           if (filteredPlatforms.length === 0) {
+            if (filteredPlatforms.length === 0) {
                 resultsContainer.innerHTML = "<p>لا توجد نتائج مطابقة.</p>";
                 return;
-          }
-           filteredPlatforms.forEach(platform => {
-               const resultItem = document.createElement("div");
+            }
+            filteredPlatforms.forEach(platform => {
+                const resultItem = document.createElement("div");
                 resultItem.className = "search-result-item";
                 resultItem.innerHTML = `
                  <span>الاسم:</span> ${platform.name}<br>
@@ -1370,49 +1451,134 @@
                  <span>الرابط:</span> ${platform.url}<br>
                    <span>ملاحظات:</span> ${platform.notes}
                `;
-                 resultsContainer.appendChild(resultItem);
-          });
+                resultsContainer.appendChild(resultItem);
+            });
 
-      }
+        }
         // تهيئة لون الخلفية
-       function initColorPicker() {
+        function initColorPicker() {
             $("#colorPicker").spectrum({
                 type: "color",
-                 preferredFormat: "hex",
-               showInput: true,
+                preferredFormat: "hex",
+                showInput: true,
                 move: function (color) {
                     document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
-                     userSettings.backgroundColor = color.toHexString();
+                    userSettings.backgroundColor = color.toHexString();
                 },
-                change: function(color){
-                  document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
-                 userSettings.backgroundColor = color.toHexString();
-                 saveUserSettings();
+                change: function (color) {
+                    document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
+                    userSettings.backgroundColor = color.toHexString();
+                    saveUserSettings();
                 }
 
+            });
+        }
+        // دالة للحصول على لون عشوائي
+          function getRandomColor() {
+           const letters = '0123456789ABCDEF';
+            let color = '#';
+             for (let i = 0; i < 6; i++) {
+              color += letters[Math.floor(Math.random() * 16)];
+           }
+             return color;
+         }
+        // دالة لتلوين المنصات بشكل عشوائي
+        function setRandomPlatformColors() {
+             platforms.forEach(platform => {
+              platform.color = getRandomColor();
+             });
+           savePlatforms();
+              createSections();
+            toastr.success("تم تلوين المنصات بشكل عشوائي!");
+         }
+        // دالة لفتح نموذج الالوان المخصصة للمنصات
+        function openCustomColorModal() {
+             document.getElementById("customColorModal").style.display = "block";
+            const customColorPlatformsList = document.getElementById("customColorPlatforms");
+            customColorPlatformsList.innerHTML = "";
+             platforms.forEach((platform, index) => {
+                 const listItem = document.createElement("li");
+                listItem.className = "platform-item";
+               listItem.setAttribute("data-index", index);
+               listItem.innerHTML = `
+                    <span>${platform.name}</span>
+                  <input type="text" class="color-input" value="${platform.color}" data-index="${index}" style="margin-right: 10px; width: 80px;"/>
+                `;
+               customColorPlatformsList.appendChild(listItem);
+          });
+           // Initialize spectrum color pickers for each input
+             $('.color-input').spectrum({
+                type: "color",
+                  preferredFormat: "hex",
+                  showInput: true,
+                change: function (color) {
+                    const index = $(this).data('index');
+                    platforms[index].color = color.toHexString();
+               }
           });
       }
-
-
+     // دالة لاغلاق نموذج الالوان المخصصة للمنصات
+    function closeCustomColorModal() {
+            document.getElementById("customColorModal").style.display = "none";
+      }
+       // دالة حفظ الالوان المخصصة للمنصات
+      function saveCustomColors() {
+          savePlatforms();
+             createSections();
+           closeCustomColorModal();
+             toastr.success("تم حفظ الألوان المخصصة!");
+         }
+        // دالة لتلوين الخلفية بشكل عشوائي
+          function setRandomBackground() {
+              const color = getRandomColor();
+                userSettings.backgroundColor = color;
+               saveUserSettings();
+            document.body.style.background = `linear-gradient(135deg, ${color}, #2a5298)`;
+           $("#colorPicker").spectrum("set", color);
+           toastr.success("تم تلوين الخلفية بشكل عشوائي!");
+           }
+        // دالة لفتح نموذج تلوين الخلفية المخصص
+         function openCustomColorModalBackground() {
+              document.getElementById("customColorModalBackground").style.display = "block";
+               $("#customBackgroundInput").spectrum({
+                  type: "color",
+                preferredFormat: "hex",
+               showInput: true,
+              });
+          }
+          // دالة لاغلاق نموذج تلوين الخلفية المخصص
+        function closeCustomColorModalBackground() {
+               document.getElementById("customColorModalBackground").style.display = "none";
+         }
+        // دالة لحفظ تلوين الخلفية المخصص
+      function saveCustomBackgroundColor(){
+           const color =  $("#customBackgroundInput").spectrum("get").toHexString();
+               userSettings.backgroundColor = color;
+                saveUserSettings();
+                document.body.style.background = `linear-gradient(135deg, ${color}, #2a5298)`;
+                $("#colorPicker").spectrum("set", color);
+              closeCustomColorModalBackground();
+                toastr.success("تم حفظ لون الخلفية المخصص!");
+          }
         // التهيئة
-       function init() {
+        function init() {
             loadPlatforms();
             updateAppColors();
             createSections();
             initColorPicker();
-             document.body.style.background = `linear-gradient(135deg, ${userSettings.backgroundColor}, #2a5298)`;
-              $("#colorPicker").spectrum("set", userSettings.backgroundColor);
-            if(userSettings.darkMode){
-             document.body.classList.add("dark-mode")
-            }
-             toastr.options = {
-                "closeButton": true,
+            document.body.style.background = `linear-gradient(135deg, ${userSettings.backgroundColor}, #2a5298)`;
+             $("#colorPicker").spectrum("set", userSettings.backgroundColor);
+             if (userSettings.darkMode) {
+                document.body.classList.add("dark-mode")
+             }
+              toastr.options = {
+               "closeButton": true,
                  "progressBar": true,
                 "positionClass": "toast-top-right",
            }
-      }
-       // تنفيذ التهيئة عند التحميل
-       window.onload = init;
+        }
+        // تنفيذ التهيئة عند التحميل
+        window.onload = init;
     </script>
 </body>
 </html>

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
         /* إعدادات عامة */
         body {
@@ -307,6 +307,22 @@
 
         .section .edit-button:hover {
             color: #fff;
+        }
+        .section .delete-button {
+            position: absolute;
+            top: 10px;
+           right: 10px;
+            padding: 5px;
+             background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+             color: #ccc;
+            transition: color 0.3s ease;
+        }
+
+        .section .delete-button:hover {
+             color: #fff;
         }
 
         /* تعديل منصة */
@@ -964,7 +980,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
     <script>
         // المنصات الاجتماعية
         let platforms = [
@@ -1021,6 +1037,7 @@
                     <button onclick="navigateTo('${platform.name}', '${platform.url}')">اذهب</button>
                    <button class="copy-btn" onclick="copyToClipboard('${platform.name}', '${platform.url}')"><i class="fas fa-copy"></i></button>
                    <button class="edit-button" onclick="openEditPlatformModal(${index})"><i class="fas fa-edit"></i></button>
+                    <button class="delete-button" onclick="deletePlatform(${index})"><i class="fas fa-trash-alt"></i></button>
                  `;
                 container.appendChild(section);
 
@@ -1121,6 +1138,16 @@
                 return true;
             }
         }
+        // حذف المنصة
+         function deletePlatform(index) {
+            if (confirm("هل أنت متأكد أنك تريد حذف هذه المنصة؟")) {
+                platforms.splice(index, 1);
+                savePlatforms();
+                createSections();
+                toastr.success("تم حذف المنصة بنجاح!");
+            }
+        }
+
 
         // إضافة منصة جديدة
         function addPlatform() {

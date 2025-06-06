@@ -1,978 +1,301 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!-- The 'lang' and 'dir' attributes are managed by JavaScript -->
+<html lang="en" dir="ltr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق التواصل الاجتماعي المتحرك</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <title>Matrix Social Linker</title>
+    <!-- Google Fonts for Hacker Theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
-        /* إعدادات عامة */
+        :root {
+            --matrix-bg: #000000;
+            --matrix-dark-red: #330000;
+            --matrix-mid-red: #8B0000;
+            --matrix-bright-red: #ff0000;
+            --matrix-glow: rgba(255, 0, 0, 0.7);
+            --matrix-text: #E0E0E0;
+            --font-primary: 'Share Tech Mono', monospace;
+            --font-secondary: 'VT323', monospace;
+        }
         body {
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: #fff;
-            text-align: center;
-            overflow-x: hidden;
-            transition: background 0.5s ease;
+            font-family: var(--font-primary); margin: 0; padding: 0; background: var(--matrix-bg);
+            color: var(--matrix-text); text-align: center; overflow-x: hidden;
         }
-
+        #matrix-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6;
+        }
+        header { padding: 20px 10px 0; }
+        .brand-container {
+            border: 2px solid var(--matrix-mid-red);
+            padding: 10px 20px;
+            margin: 0 auto 20px;
+            max-width: 500px;
+            background: rgba(0,0,0,0.3);
+            box-shadow: 0 0 15px var(--matrix-glow), inset 0 0 10px var(--matrix-dark-red);
+            position: relative;
+        }
+        .brand-title {
+            font-family: var(--font-secondary); font-size: 42px;
+            text-shadow: 0 0 8px var(--matrix-glow), 0 0 15px var(--matrix-dark-red);
+            margin: 0; padding: 0; letter-spacing: 2px;
+            background: linear-gradient(180deg, var(--matrix-bright-red), var(--matrix-mid-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulseGlow 4s infinite alternate;
+        }
         h1 {
-            font-size: 36px;
-            margin: 20px 0;
-            color: #fdfdfd;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-            animation: fadeInDown 1s ease-in-out;
+            font-family: var(--font-secondary); font-size: 48px; margin: 20px 0;
+            color: var(--matrix-bright-red);
+            text-shadow: 0 0 5px var(--matrix-bright-red), 0 0 10px var(--matrix-bright-red), 0 0 20px var(--matrix-dark-red);
+            animation: fadeInDown 1s ease-in-out, flicker 3s infinite alternate;
+            letter-spacing: 3px;
         }
-
         .container {
-            padding: 20px;
-            max-width: 900px;
-            margin: auto;
+            padding: 20px; max-width: 1200px; margin: auto; display: flex;
+            flex-wrap: wrap; justify-content: center; gap: 30px; perspective: 2000px;
         }
-
         .section {
-            margin: 20px 0;
-            padding: 25px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
-            transition: transform 0.5s ease, box-shadow 0.5s ease;
-            opacity: 0;
-            transform: translateY(50px);
-            position: relative;
+            width: 300px; margin: 10px 0; padding: 25px; border-radius: 10px;
+            background: rgba(10, 0, 0, 0.4);
+            box-shadow: 0 0 15px var(--matrix-glow), inset 0 0 10px var(--matrix-dark-red);
+            border: 1px solid var(--matrix-mid-red);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease-out, box-shadow 0.3s ease;
+            transform-style: preserve-3d; position: relative;
         }
-
-        .section.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-        }
-
+        .section:hover { box-shadow: 0 0 30px var(--matrix-glow), inset 0 0 15px var(--matrix-dark-red); }
         .section h2 {
-            font-size: 22px;
-            color: #fff;
+            font-family: var(--font-secondary); font-size: 28px; color: var(--matrix-text);
+            text-shadow: 0 0 5px var(--matrix-bright-red); margin-top: 0; display: flex;
+            align-items: center; justify-content: center; gap: 10px;
         }
-
+        .h2-icon {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
         .section input {
-            width: 80%;
-            padding: 14px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 25px;
-            background: #fff;
-            color: #333;
-            font-size: 16px;
-            transition: box-shadow 0.3s ease;
+            width: 90%; padding: 12px; margin: 10px 0; border: 1px solid var(--matrix-mid-red);
+            border-radius: 5px; background: rgba(0, 0, 0, 0.5); color: var(--matrix-text);
+            font-family: var(--font-primary); font-size: 16px;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
-
-        .section input:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-        }
-
+        .section input:focus { outline: none; border-color: var(--matrix-bright-red); box-shadow: 0 0 10px var(--matrix-glow); }
         .section button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(120deg, #ff7e5f, #feb47b);
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s ease, background 0.3s ease;
-            margin-right: 5px;
-            position: relative;
+            padding: 10px 20px; border: 1px solid var(--matrix-mid-red); border-radius: 5px;
+            background: transparent; color: var(--matrix-text); font-family: var(--font-primary);
+            font-size: 14px; font-weight: bold; text-transform: uppercase; cursor: pointer;
+            transition: all 0.3s ease; margin: 0 5px; position: relative;
         }
-
-        .section .copy-btn {
-            background: linear-gradient(120deg, #4caf50, #66bb6a);
-        }
-
-        .section .copy-btn:hover {
-            background: linear-gradient(120deg, #66bb6a, #4caf50);
-        }
-
         .section button:hover {
-            background: linear-gradient(120deg, #feb47b, #ff7e5f);
-            transform: scale(1.1);
+            background: var(--matrix-dark-red); color: var(--matrix-bright-red);
+            border-color: var(--matrix-bright-red); box-shadow: 0 0 15px var(--matrix-glow);
         }
-
-        /* الوضع الليلي */
-        .dark-mode {
-            background: linear-gradient(135deg, #141e30, #243b55);
-            color: #ddd;
+        .section .edit-button, .section .delete-button {
+            position: absolute; top: 10px; padding: 5px; background: transparent; border: none;
+            font-size: 1.2rem; cursor: pointer; color: var(--matrix-mid-red);
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
-
-        .dark-mode .section {
-            background: rgba(0, 0, 0, 0.7);
-            color: #ddd;
-        }
-
-        .dark-mode input {
-            background: #333;
-            color: #fff;
-        }
-
+        html[dir="ltr"] .section .edit-button { left: 10px; }
+        html[dir="ltr"] .section .delete-button { right: 10px; }
+        html[dir="rtl"] .section .edit-button { right: 10px; }
+        html[dir="rtl"] .section .delete-button { left: 10px; }
+        .section .edit-button:hover, .section .delete-button:hover { color: var(--matrix-bright-red); text-shadow: 0 0 8px var(--matrix-glow); }
         .controls {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 1s ease-in-out;
+            margin-top: 15px; margin-bottom: 20px; display: flex; justify-content: center;
+            align-items: center; flex-wrap: wrap; gap: 10px;
         }
-
         .controls button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #fff;
-            transition: background 0.3s ease;
-            position: relative;
+            padding: 10px 15px; border: 1px solid var(--matrix-mid-red); border-radius: 5px;
+            font-size: 16px; cursor: pointer; color: var(--matrix-text);
+            background: rgba(10, 0, 0, 0.6); backdrop-filter: blur(5px); transition: all 0.3s ease;
+            animation: pulseBorder 5s infinite alternate;
         }
-
-        .controls .dark-mode-toggle {
-            background: #2c5364;
+        .controls button:hover {
+            color: var(--matrix-bright-red); border-color: var(--matrix-bright-red);
+            box-shadow: 0 0 10px var(--matrix-glow); animation-play-state: paused;
         }
-
-        .controls .dark-mode-toggle:hover {
-            background: #3f718a;
+        .modal {
+            display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%;
+            overflow: auto; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px);
         }
-
-        .controls .reset-btn {
-            background: #ff4e50;
+        .modal-content {
+            background: rgba(10, 10, 10, 0.85); margin: 10% auto; padding: 25px;
+            border: 1px solid var(--matrix-mid-red); box-shadow: 0 0 25px var(--matrix-glow);
+            width: 80%; max-width: 500px; border-radius: 10px; text-align: center;
+            color: var(--matrix-text); animation: zoomIn 0.4s ease-in-out; position: relative;
         }
-
-        .controls .reset-btn:hover {
-            background: #ff7e81;
+        .modal-content h2 {
+            font-family: var(--font-secondary); font-size: 2rem; color: var(--matrix-bright-red);
+            text-shadow: 0 0 5px var(--matrix-glow);
         }
-
-        .controls .add-platform-btn {
-            background: #4caf50;
+        .modal-content input, .modal-content textarea, .modal-content select {
+            width: 80%; padding: 14px; margin: 10px 0; border: 1px solid var(--matrix-mid-red);
+            border-radius: 5px; font-size: 16px; background: rgba(0,0,0,0.7);
+            color: var(--matrix-text); font-family: var(--font-primary);
         }
-
-        .controls .add-platform-btn:hover {
-            background: #66bb6a;
+        .modal-content input:focus, .modal-content textarea:focus, .modal-content select:focus {
+            outline: none; border-color: var(--matrix-bright-red); box-shadow: 0 0 10px var(--matrix-glow);
         }
-
-        .controls .settings-btn {
-            background: #9c27b0;
+        .modal-content button {
+            padding: 10px 25px; border: 1px solid var(--matrix-bright-red); border-radius: 5px;
+            background: var(--matrix-dark-red); color: var(--matrix-text); font-size: 16px;
+            font-weight: bold; cursor: pointer; transition: all 0.3s ease; margin-top: 10px;
         }
-
-        .controls .settings-btn:hover {
-            background: #ba68c8;
-        }
-
-        .controls .import-export-btn {
-            background: #009688;
-        }
-
-        .controls .import-export-btn:hover {
-            background: #26a69a;
-        }
-
-        .controls .search-btn {
-            background: #00bcd4;
-        }
-
-        .controls .search-btn:hover {
-            background: #26c6da;
-        }
-
-        /* إضافة منصة */
-        .add-platform-modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .add-platform-modal-content {
-            background-color: rgba(255, 255, 255, 0.85);
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            color: #333;
-            animation: zoomIn 0.4s ease-in-out;
-        }
-
-        .add-platform-modal-content input {
-            margin: 10px 0;
-            width: 80%;
-            padding: 14px;
-            border: 1px solid #ccc;
-            border-radius: 25px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .add-platform-modal-content button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(120deg, #ff7e5f, #feb47b);
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .add-platform-modal-content button:hover {
-            background: linear-gradient(120deg, #feb47b, #ff7e5f);
-        }
-
+        .modal-content button:hover { background: var(--matrix-bright-red); color: var(--matrix-bg); box-shadow: 0 0 15px var(--matrix-glow); }
         .close {
-            color: #aaa;
-            float: left;
-            font-size: 28px;
-            font-weight: bold;
+            color: #aaa; position: absolute; top: 10px; font-size: 32px; font-weight: bold;
+            transition: color 0.3s, text-shadow 0.3s;
         }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .platforms-container {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .platform-item {
-            margin-bottom: 5px;
-            padding: 5px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #333;
-        }
-
-        .platform-item button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #f44336;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .platform-item button:hover {
-            background-color: #d32f2f;
-        }
-
-        .section .edit-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 5px;
-            background: transparent;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: #ccc;
-            transition: color 0.3s ease;
-        }
-
-        .section .edit-button:hover {
-            color: #fff;
-        }
-        .section .delete-button {
-            position: absolute;
-            top: 10px;
-           right: 10px;
-            padding: 5px;
-             background: transparent;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-             color: #ccc;
-            transition: color 0.3s ease;
-        }
-
-        .section .delete-button:hover {
-             color: #fff;
-        }
-
-        /* تعديل منصة */
-        .edit-platform-modal {
-            display: none;
-            position: fixed;
-            z-index: 2;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .edit-platform-modal-content {
-            background-color: rgba(255, 255, 255, 0.85);
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            color: #333;
-            animation: zoomIn 0.4s ease-in-out;
-        }
-
-        .edit-platform-modal-content input {
-            margin: 10px 0;
-            width: 80%;
-            padding: 14px;
-            border: 1px solid #ccc;
-            border-radius: 25px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .edit-platform-modal-content button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(120deg, #ff7e5f, #feb47b);
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .edit-platform-modal-content button:hover {
-            background: linear-gradient(120deg, #feb47b, #ff7e5f);
-        }
-
-        .edit-platform-modal-content textarea {
-            margin: 10px 0;
-            width: 80%;
-            height: 100px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .edit-platform-modal-content textarea:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-        }
-
-        /* إعدادات */
-        .settings-modal {
-            display: none;
-            position: fixed;
-            z-index: 3;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .settings-modal-content {
-            background-color: rgba(255, 255, 255, 0.85);
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            color: #333;
-            animation: zoomIn 0.4s ease-in-out;
-        }
-
-        .settings-modal-content h2 {
-            margin-bottom: 20px;
-        }
-
-        .settings-modal-content .theme-selector {
-            margin-bottom: 20px;
-        }
-
-        .settings-modal-content .theme-selector button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #fff;
-            transition: background 0.3s ease;
-        }
-
-        .settings-modal-content .theme-selector button.light-theme {
-            background: #eee;
-            color: #333;
-        }
-
-        .settings-modal-content .theme-selector button.light-theme:hover {
-            background: #ddd;
-        }
-
-        .settings-modal-content .theme-selector button.dark-theme {
-            background: #333;
-        }
-
-        .settings-modal-content .theme-selector button.dark-theme:hover {
-            background: #222;
-        }
-
-        .settings-modal-content button.reset-settings {
-            background: #f44336;
-            color: #fff;
-            transition: background 0.3s ease;
-        }
-
-        .settings-modal-content button.reset-settings:hover {
-            background: #d32f2f;
-        }
-
-        .settings-modal-content .order-selector {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .settings-modal-content .order-selector button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #fff;
-            transition: background 0.3s ease;
-        }
-
-        .settings-modal-content .order-selector button.sort-name-asc {
-            background: #4caf50;
-        }
-
-        .settings-modal-content .order-selector button.sort-name-asc:hover {
-            background: #66bb6a;
-        }
-
-        .settings-modal-content .order-selector button.sort-name-desc {
-            background: #ff9800;
-        }
-
-        .settings-modal-content .order-selector button.sort-name-desc:hover {
-            background: #ffa733;
-        }
-
-        .settings-modal-content .order-selector button.sort-custom {
-            background: #009688;
-        }
-
-        .settings-modal-content .order-selector button.sort-custom:hover {
-            background: #26a69a;
-        }
-
-        .settings-modal-content .color-picker-container {
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-
-        }
-
-        .settings-modal-content .color-picker-container label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            width: 100%;
-            text-align: center;
-
-        }
-
-        .settings-modal-content .color-picker-container div {
-            margin: 10px;
-        }
-
-        .settings-modal-content .color-picker-container button {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 1px solid #ccc;
-            margin: 5px;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .settings-modal-content .color-picker-container input {
-            width: auto;
-        }
-
-        /* رسائل الخطأ */
+        html[dir="ltr"] .close { right: 20px; }
+        html[dir="rtl"] .close { left: 20px; }
+        .close:hover, .close:focus { color: var(--matrix-bright-red); text-shadow: 0 0 8px var(--matrix-glow); text-decoration: none; cursor: pointer; }
         .error-message {
-            color: #f44336;
-            font-size: 14px;
-            margin-top: 5px;
-            display: block;
+            color: var(--matrix-bright-red); font-size: 14px; margin-top: -5px;
+            margin-bottom: 10px; display: block; text-shadow: 0 0 3px var(--matrix-glow);
         }
-
-        .section input.error {
-            border: 1px solid #f44336;
+        .platform-item, .search-result-item {
+            margin-bottom: 10px; padding: 10px; background-color: rgba(255,0,0,0.1);
+            border-radius: 5px; border: 1px solid var(--matrix-mid-red);
         }
-
-        /* استيراد وتصدير */
-        .import-export-modal {
-            display: none;
-            position: fixed;
-            z-index: 4;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .import-export-modal-content {
-            background-color: rgba(255, 255, 255, 0.85);
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            color: #333;
-            animation: zoomIn 0.4s ease-in-out;
-        }
-
-        .import-export-modal-content textarea {
-            width: 80%;
-            height: 150px;
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .import-export-modal-content textarea:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-        }
-
-        .import-export-modal-content button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(120deg, #ff7e5f, #feb47b);
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .import-export-modal-content button:hover {
-            background: linear-gradient(120deg, #feb47b, #ff7e5f);
-        }
-
-        .import-export-modal-content .file-input-container {
-            margin-bottom: 20px;
-        }
-
-        .import-export-modal-content input[type="file"] {
-            display: none;
-        }
-
-        .import-export-modal-content .custom-file-input-btn {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(120deg, #009688, #26a69a);
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            display: inline-block;
-        }
-
-        .import-export-modal-content .custom-file-input-btn:hover {
-            background: linear-gradient(120deg, #26a69a, #009688);
-        }
-
-        /* بحث */
-        .search-modal {
-            display: none;
-            position: fixed;
-            z-index: 5;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .search-modal-content {
-            background-color: rgba(255, 255, 255, 0.85);
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            color: #333;
-            animation: zoomIn 0.4s ease-in-out;
-        }
-
-        .search-modal-content input {
-            margin: 10px 0;
-            width: 80%;
-            padding: 14px;
-            border: 1px solid #ccc;
-            border-radius: 25px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .search-modal-content input:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-        }
-
-        .search-modal-content select {
-            margin: 10px 0;
-            width: 80%;
-            padding: 14px;
-            border: 1px solid #ccc;
-            border-radius: 25px;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .search-modal-content select:focus {
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-        }
-
-        .search-modal-content .search-results {
-            margin-top: 20px;
-            max-height: 300px;
-            overflow-y: auto;
-            text-align: right;
-        }
-
-        .search-modal-content .search-result-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            color: #333;
-        }
-
-        .search-modal-content .search-result-item span {
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        .search-modal-content button {
-            padding: 10px 25px;
-            border: none;
-            border-radius: 25px;
-            background: linear-gradient(120deg, #00bcd4, #26c6da);
-            color: #fff;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .search-modal-content button:hover {
-            background: linear-gradient(120deg, #26c6da, #00bcd4);
-        }
-
-        /* tooltips */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 150px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 5px 0;
-            border-radius: 6px;
-            position: absolute;
-            z-index: 1;
-            bottom: -50px;
-            left: 50%;
-            margin-left: -75px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        /* End tooltips */
-        .random-color-btn {
-            background: linear-gradient(120deg, #9b59b6, #8e44ad);
-        }
-
-        .random-color-btn:hover {
-            background: linear-gradient(120deg, #8e44ad, #9b59b6);
-        }
-        .custom-color-btn {
-            background: linear-gradient(120deg, #3498db, #2980b9);
-        }
-
-        .custom-color-btn:hover {
-            background: linear-gradient(120deg, #2980b9, #3498db);
+        .platform-item { display: flex; justify-content: space-between; align-items: center; cursor: move; }
+        .search-result-item { text-align: start; }
+        .toast-success, .toast-error, .toast-info, .toast-warning { background-color: transparent !important; border: 1px solid; }
+        .toast-success { border-color: #008000 !important; } .toast-error { border-color: var(--matrix-mid-red) !important; }
+        .toast-info { border-color: #0055A4 !important; } .toast-warning { border-color: #8B4513 !important; }
+        #toast-container > div {
+            opacity: 0.95; box-shadow: 0 0 12px #000; border-radius: 5px;
+            font-family: var(--font-primary); backdrop-filter: blur(5px);
         }
         /* Animations */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes pulseGlow { 0%, 100% { text-shadow: 0 0 8px var(--matrix-glow), 0 0 15px var(--matrix-dark-red); } 50% { text-shadow: 0 0 12px var(--matrix-glow), 0 0 25px var(--matrix-dark-red); } }
+        @keyframes pulseBorder { 0%, 100% { border-color: var(--matrix-mid-red); } 50% { border-color: var(--matrix-bright-red); } }
+        @keyframes flicker { 0%, 100% { opacity: 1; text-shadow: 0 0 5px var(--matrix-bright-red), 0 0 10px var(--matrix-bright-red), 0 0 20px var(--matrix-dark-red); } 50% { opacity: 0.8; text-shadow: 0 0 5px var(--matrix-bright-red), 0 0 8px var(--matrix-dark-red); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 
 <body>
-    <div class="controls">
-        <button class="tooltip dark-mode-toggle" onclick="toggleDarkMode()">
-            <i class="fas fa-moon"></i>
-            <span class="tooltiptext">الوضع الليلي</span>
-        </button>
-        <button class="tooltip reset-btn" onclick="resetInputs()">
-            <i class="fas fa-sync-alt"></i>
-            <span class="tooltiptext">إعادة تعيين الحقول</span>
-        </button>
-        <button class="tooltip add-platform-btn" onclick="openAddPlatformModal()">
-            <i class="fas fa-plus"></i>
-            <span class="tooltiptext">إضافة منصة</span>
-        </button>
-        <button class="tooltip settings-btn" onclick="openSettingsModal()">
-            <i class="fas fa-cog"></i>
-            <span class="tooltiptext">الإعدادات</span>
-        </button>
-        <button class="tooltip import-export-btn" onclick="openImportExportModal()">
-            <i class="fas fa-upload"></i>
-            <span class="tooltiptext">استيراد وتصدير</span>
-        </button>
-        <button class="tooltip search-btn" onclick="openSearchModal()">
-            <i class="fas fa-search"></i>
-            <span class="tooltiptext">بحث</span>
-        </button>
+    <canvas id="matrix-canvas"></canvas>
 
-    </div>
+    <header>
+        <div class="brand-container">
+            <h2 class="brand-title" data-translate-key="brandTitle"></h2>
+        </div>
+        <div class="controls">
+            <button id="lang-toggle" onclick="toggleLanguage()">
+                <i class="fas fa-language"></i> <span id="lang-toggle-text">AR</span>
+            </button>
+            <button onclick="resetInputs()">
+                <i class="fas fa-sync-alt"></i> <span data-translate-key="controls.reset"></span>
+            </button>
+            <button onclick="openAddPlatformModal()">
+                <i class="fas fa-plus-circle"></i> <span data-translate-key="controls.add"></span>
+            </button>
+            <button onclick="openSettingsModal()">
+                <i class="fas fa-cog"></i> <span data-translate-key="controls.config"></span>
+            </button>
+            <button onclick="openImportExportModal()">
+                <i class="fas fa-upload"></i> <span data-translate-key="controls.io"></span>
+            </button>
+            <button onclick="openSearchModal()">
+                <i class="fas fa-search"></i> <span data-translate-key="controls.search"></span>
+            </button>
+        </div>
+    </header>
+    
     <div class="container">
-        <h1>تطبيق التواصل الاجتماعي المتحرك</h1>
+        <h1 data-translate-key="mainTitle"></h1>
         <div id="sections"></div>
     </div>
 
-    <div id="addPlatformModal" class="add-platform-modal">
-        <div class="add-platform-modal-content">
-            <span class="close" onclick="closeAddPlatformModal()">×</span>
-            <h2>إضافة منصة جديدة</h2>
-            <input type="text" id="newPlatformName" placeholder="اسم المنصة" />
-            <span id="newPlatformNameError" class="error-message"></span>
-            <input type="text" id="newPlatformIcon" placeholder="الأيقونة (Emoji)" />
-            <span id="newPlatformIconError" class="error-message"></span>
-            <input type="text" id="newPlatformPlaceholder" placeholder="مثال: اسم المستخدم" />
-            <span id="newPlatformPlaceholderError" class="error-message"></span>
-            <input type="text" id="newPlatformUrl" placeholder="عنوان URL (مثال: https://example.com/)" />
-            <span id="newPlatformUrlError" class="error-message"></span>
-            <button onclick="addPlatform()">إضافة</button>
+    <!-- Modals -->
+    <div id="addPlatformModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addPlatformModal')">×</span>
+            <h2 data-translate-key="modals.add.title"></h2>
+            <input type="text" id="newPlatformName" data-translate-key-placeholder="modals.add.name_placeholder" />
+            <input type="text" id="newPlatformIcon" data-translate-key-placeholder="modals.add.icon_placeholder" />
+            <input type="text" id="newPlatformPlaceholder" data-translate-key-placeholder="modals.add.placeholder_placeholder" />
+            <input type="text" id="newPlatformUrl" data-translate-key-placeholder="modals.add.url_placeholder" />
+            <button onclick="addPlatform()" data-translate-key="modals.add.button"></button>
+        </div>
+    </div>
+    
+    <div id="editPlatformModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editPlatformModal')">×</span>
+            <h2 data-translate-key="modals.edit.title"></h2>
+            <input type="text" id="editPlatformName" data-translate-key-placeholder="modals.edit.name_placeholder" />
+            <input type="text" id="editPlatformIcon" data-translate-key-placeholder="modals.edit.icon_placeholder" />
+            <input type="text" id="editPlatformPlaceholder" data-translate-key-placeholder="modals.edit.placeholder_placeholder" />
+            <input type="text" id="editPlatformUrl" data-translate-key-placeholder="modals.edit.url_placeholder" />
+            <textarea id="editPlatformNotes" data-translate-key-placeholder="modals.edit.notes_placeholder"></textarea>
+            <input type="text" id="editPlatformColor" data-translate-key-placeholder="modals.edit.color_placeholder" />
+            <button onclick="saveEditPlatform()" data-translate-key="modals.edit.button"></button>
         </div>
     </div>
 
-    <div id="editPlatformModal" class="edit-platform-modal">
-        <div class="edit-platform-modal-content">
-            <span class="close" onclick="closeEditPlatformModal()">×</span>
-            <h2>تعديل المنصة</h2>
-            <input type="text" id="editPlatformName" placeholder="اسم المنصة" />
-            <span id="editPlatformNameError" class="error-message"></span>
-            <input type="text" id="editPlatformIcon" placeholder="الأيقونة (Emoji)" />
-            <span id="editPlatformIconError" class="error-message"></span>
-            <input type="text" id="editPlatformPlaceholder" placeholder="مثال: اسم المستخدم" />
-            <span id="editPlatformPlaceholderError" class="error-message"></span>
-            <input type="text" id="editPlatformUrl" placeholder="عنوان URL (مثال: https://example.com/)" />
-            <span id="editPlatformUrlError" class="error-message"></span>
-            <textarea id="editPlatformNotes" placeholder="الملاحظات"></textarea>
-            <input type="text" id="editPlatformColor" placeholder="لون المنصة (مثال: #ff7e5f)" value="#ff7e5f" />
-            <span id="editPlatformColorError" class="error-message"></span>
-            <button onclick="saveEditPlatform()">حفظ التعديلات</button>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('settingsModal')">×</span>
+            <h2 data-translate-key="modals.settings.title"></h2>
+            <button onclick="sortPlatformsByNameAsc()" data-translate-key="modals.settings.sortAsc"></button>
+            <button onclick="sortPlatformsByNameDesc()" data-translate-key="modals.settings.sortDesc"></button>
+            <button onclick="openCustomSortModal()" data-translate-key="modals.settings.sortCustom"></button>
+            <br/><br/>
+            <button onclick="setRandomPlatformColors()" data-translate-key="modals.settings.randomColors"></button>
+            <button class="reset-settings" style="background-color: var(--matrix-mid-red);" onclick="resetAllSettings()" data-translate-key="modals.settings.factoryReset"></button>
         </div>
     </div>
 
-    <div id="settingsModal" class="settings-modal">
-        <div class="settings-modal-content">
-            <span class="close" onclick="closeSettingsModal()">×</span>
-            <h2>إعدادات التطبيق</h2>
-            <div class="theme-selector">
-                <button class="light-theme" onclick="setLightTheme()">الوضع الفاتح</button>
-                <button class="dark-theme" onclick="setDarkTheme()">الوضع الداكن</button>
+    <div id="customSortModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('customSortModal')">×</span>
+            <h2 data-translate-key="modals.customSort.title"></h2>
+            <ul id="sortablePlatforms" style="list-style-type: none; padding: 0;"></ul>
+            <button onclick="saveCustomOrder()" data-translate-key="modals.customSort.button"></button>
+        </div>
+    </div>
+
+    <div id="importExportModal" class="modal">
+         <div class="modal-content">
+            <span class="close" onclick="closeModal('importExportModal')">×</span>
+            <h2 data-translate-key="modals.io.title"></h2>
+            <textarea id="exportTextArea" data-translate-key-placeholder="modals.io.stream_placeholder"></textarea>
+            <button onclick="exportPlatforms()" data-translate-key="modals.io.exportButton"></button>
+            <div class="file-input-container" style="margin-top: 20px;">
+                <label for="importFileInput" class="custom-file-input-btn" style="display:inline-block; padding: 10px 25px; border: 1px solid var(--matrix-bright-red); border-radius: 5px; background: var(--matrix-dark-red); cursor:pointer;" data-translate-key="modals.io.importFileButton"></label>
+                <input type="file" id="importFileInput" accept=".json" onchange="importPlatformsFromFile(event)" style="display:none;">
             </div>
-            <div class="order-selector">
-                <button class="sort-name-asc" onclick="sortPlatformsByNameAsc()">ترتيب الأسماء تصاعدياً</button>
-                <button class="sort-name-desc" onclick="sortPlatformsByNameDesc()">ترتيب الأسماء تنازلياً</button>
-                <button class="sort-custom" onclick="openCustomSortModal()">ترتيب مخصص</button>
-            </div>
-            <div class="color-picker-container">
-                <label for="colorPicker">تخصيص لون الخلفية:</label>
-                <div>
-                    <input type="text" id="colorPicker" value="#1e3c72" />
-                </div>
-                <div>
-                    <button style="background-color:#1e3c72" onclick="selectPredefinedColor('#1e3c72')"></button>
-                    <button style="background-color:#141e30" onclick="selectPredefinedColor('#141e30')"></button>
-                    <button style="background-color:#2c3e50" onclick="selectPredefinedColor('#2c3e50')"></button>
-                    <button style="background-color:#34495e" onclick="selectPredefinedColor('#34495e')"></button>
-                    <button style="background-color:#777"    onclick="selectPredefinedColor('#777')"></button>
-                    <button style="background-color:#e74c3c" onclick="selectPredefinedColor('#e74c3c')"></button>
-                    <button style="background-color:#8e44ad" onclick="selectPredefinedColor('#8e44ad')"></button>
-                    <button style="background-color:#2980b9" onclick="selectPredefinedColor('#2980b9')"></button>
-                    <button style="background-color:#2ecc71" onclick="selectPredefinedColor('#2ecc71')"></button>
+            <button onclick="importPlatformsFromText()" data-translate-key="modals.io.importStreamButton"></button>
+        </div>
+    </div>
 
-                </div>
-
-            </div>
-             <button class="random-color-btn" onclick="setRandomBackground()">تلوين عشوائي للخلفية</button>
-             <button class="custom-color-btn" onclick="openCustomColorModalBackground()">تلوين مخصص للخلفية</button>
-            <button class="random-color-btn" onclick="setRandomPlatformColors()">تلوين عشوائي للمنصات</button>
-             <button class="custom-color-btn" onclick="openCustomColorModal()">تلوين مخصص للمنصات</button>
-             <button class="reset-settings" onclick="resetAllSettings()">إعادة تعيين الإعدادات</button>
-        </div>
-    </div>
-    <div id="customSortModal" class="settings-modal">
-        <div class="settings-modal-content">
-            <span class="close" onclick="closeCustomSortModal()">×</span>
-            <h2>ترتيب مخصص للمنصات</h2>
-            <ul id="sortablePlatforms">
-            </ul>
-            <button onclick="saveCustomOrder()">حفظ الترتيب</button>
-        </div>
-    </div>
-    <div id="customColorModal" class="settings-modal">
-        <div class="settings-modal-content">
-            <span class="close" onclick="closeCustomColorModal()">×</span>
-            <h2>تلوين مخصص للمنصات</h2>
-            <ul id="customColorPlatforms">
-            </ul>
-             <button onclick="saveCustomColors()">حفظ الألوان</button>
-        </div>
-    </div>
-      <div id="customColorModalBackground" class="settings-modal">
-        <div class="settings-modal-content">
-             <span class="close" onclick="closeCustomColorModalBackground()">×</span>
-              <h2>تلوين مخصص للخلفية</h2>
-                 <label>اختر لونًا مخصصًا:</label>
-                   <input type="text" id="customBackgroundInput" value="#1e3c72" style="width: auto;"  />
-
-             <button onclick="saveCustomBackgroundColor()">حفظ لون الخلفية</button>
-        </div>
-     </div>
-    <div id="importExportModal" class="import-export-modal">
-        <div class="import-export-modal-content">
-            <span class="close" onclick="closeImportExportModal()">×</span>
-            <h2>استيراد وتصدير المنصات</h2>
-            <textarea id="exportTextArea" placeholder="المنصات بتنسيق JSON"></textarea>
-            <button onclick="exportPlatforms()">تصدير المنصات</button>
-            <div class="file-input-container">
-                <label for="importFileInput" class="custom-file-input-btn">استيراد من ملف</label>
-                <input type="file" id="importFileInput" accept=".json" onchange="importPlatformsFromFile(event)">
-            </div>
-            <button onclick="importPlatforms()">استيراد المنصات</button>
-        </div>
-    </div>
-    <div id="searchModal" class="search-modal">
-        <div class="search-modal-content">
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
             <span class="close" onclick="closeSearchModal()">×</span>
-            <h2>البحث عن منصة</h2>
-            <input type="text" id="searchInput" placeholder="ابحث عن منصة..." oninput="searchPlatforms()" />
-            <select id="searchFieldSelect">
-                <option value="name">اسم المنصة</option>
-                <option value="placeholder">مثال الإدخال</option>
-                <option value="url">الرابط</option>
-                <option value="notes">الملاحظات</option>
-
+            <h2 data-translate-key="modals.search.title"></h2>
+            <input type="text" id="searchInput" oninput="searchPlatforms()" data-translate-key-placeholder="modals.search.placeholder" />
+            <select id="searchFieldSelect" onchange="searchPlatforms()">
+                <option value="name" data-translate-key="modals.search.option_name"></option>
+                <option value="placeholder" data-translate-key="modals.search.option_placeholder"></option>
+                <option value="url" data-translate-key="modals.search.option_url"></option>
+                <option value="notes" data-translate-key="modals.search.option_notes"></option>
             </select>
-            <button onclick="searchPlatforms()">بحث</button>
-            <div class="search-results" id="searchResults">
-                <!-- نتائج البحث هنا -->
-            </div>
+            <div id="searchResults" style="margin-top: 20px; max-height: 250px; overflow-y: auto;"></div>
         </div>
     </div>
 
@@ -980,632 +303,205 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
+    
     <script>
-        // المنصات الاجتماعية
-        let platforms = [
-            { name: "WhatsApp", icon: "📞", placeholder: "رقم الهاتف", url: "https://wa.me/", notes: "", color: "#25D366" },
-            { name: "Viber", icon: "💜", placeholder: "رقم فايبر", url: "viber://add?number=", notes: "", color: "#7360f2" },
-            { name: "Telegram", icon: "✈️", placeholder: "يوزر تلغرام", url: "https://t.me/", notes: "", color: "#229ED9" },
-            { name: "Id Telegram", icon: "😎", placeholder: "معرف تلغرام", url: "tg://openmessage?user_id=", notes: "", color: "#229ED9" },
-            { name: "Instagram", icon: "📸", placeholder: "معرف إنستغرام", url: "https://instagram.com/", notes: "", color: "#E1306C" },
-            { name: "TikTok", icon: "🎶", placeholder: "معرف تيك توك", url: "https://www.tiktok.com/@", notes: "", color: "#000000" },
-            { name: "Facebook", icon: "📘", placeholder: "معرف فيسبوك", url: "https://www.facebook.com/", notes: "", color: "#1877F2" },
-            { name: "Messenger", icon: "💬", placeholder: "معرف ماسنجر", url: "https://m.me/", notes: "", color: "#0078FF" },
-            { name: "twitter", icon: "🔞", placeholder: "تويتر", url: "https://twitter.com/", notes: "", color: "#1DA1F2" },
-            { name: "Discord", icon: "🎮", placeholder: "اسم المستخدم # الرقم", url: "https://discord.com/users/", notes: "", color: "#5865F2" },
-            { name: "Snapchat", icon: "👻", placeholder: "معرف سناب شات", url: "https://www.snapchat.com/add/", notes: "", color: "#FFFC00" },
-        ];
-        // تفضيلات المستخدم
-        let userSettings = {
-            darkMode: localStorage.getItem('darkMode') === 'true' || false,
-            backgroundColor: localStorage.getItem('backgroundColor') || '#1e3c72',
+        // --- SECTION 1: BACKGROUND ANIMATION ---
+        (function() {
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let particlesArray;
+            function initParticles() { particlesArray = []; let num = (canvas.height * canvas.width) / 9000; for (let i = 0; i < num; i++) { let s = (Math.random() * 2) + 1; let x = (Math.random() * ((innerWidth - s * 2) - (s * 2)) + s * 2); let y = (Math.random() * ((innerHeight - s * 2) - (s * 2)) + s * 2); let dX = (Math.random() * 0.4) - 0.2; let dY = (Math.random() * 0.4) - 0.2; particlesArray.push(new Particle(x, y, dX, dY, s)); } }
+            class Particle { constructor(x, y, dX, dY, s) { this.x = x; this.y = y; this.directionX = dX; this.directionY = dY; this.size = s; this.color = 'rgba(255,0,0,0.5)'; } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill(); } update() { if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX; if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY; this.x += this.directionX; this.y += this.directionY; this.draw(); } }
+            function connect() { let opacityValue = 1; for (let a = 0; a < particlesArray.length; a++) { for (let b = a; b < particlesArray.length; b++) { let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y)); if (distance < (canvas.width / 7) * (canvas.height / 7)) { opacityValue = 1 - (distance / 20000); ctx.strokeStyle = `rgba(255,0,0,${opacityValue})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke(); } } } }
+            function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, innerWidth, innerHeight); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect(); }
+            window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; initParticles(); });
+            initParticles(); animate();
+        })();
+
+        // --- SECTION 2: TRANSLATION ENGINE ---
+        const translations = {
+            en: {
+                brandTitle: "Programmer Hirose", mainTitle: "MATRIX SOCIAL LINKER",
+                controls: { reset: "Reset", add: "Add Entity", config: "Config", io: "Data I/O", search: "Search" },
+                card: { go: "Go", copy: "Copy Link" },
+                modals: {
+                    add: { title: "[ Add New Entity ]", name_placeholder: "Entity Name (e.g., WhatsApp)", icon_placeholder: "Identifier Icon (e.g., 📞)", placeholder_placeholder: "Input Placeholder (e.g., Phone Number)", url_placeholder: "Base URL (e.g., https://wa.me/)", button: "Inject" },
+                    edit: { title: "[ Modify Entity ]", name_placeholder: "Entity Name", icon_placeholder: "Identifier Icon", placeholder_placeholder: "Input Placeholder", url_placeholder: "Base URL", notes_placeholder: "Notes...", color_placeholder: "Glow Color (e.g., #ff0000)", button: "Commit Changes" },
+                    settings: { title: "[ System Configuration ]", sortAsc: "Sort: Name ASC", sortDesc: "Sort: Name DESC", sortCustom: "Sort: Custom Order", randomColors: "Randomize Glow Colors", factoryReset: "! FACTORY RESET !" },
+                    customSort: { title: "[ Custom Sorting ]", button: "Save Order" },
+                    io: { title: "[ Data Import / Export ]", stream_placeholder: "JSON data stream...", exportButton: "Export to Stream", importFileButton: "Import from File", importStreamButton: "Import from Stream" },
+                    search: { title: "[ Search Database ]", placeholder: "Enter search query...", option_name: "Name", option_placeholder: "Placeholder", option_url: "URL", option_notes: "Notes", no_results: "No matching results found." }
+                },
+                toasts: { inputRequired: "Input required.", linkCopied: "Link copied.", copyFailed: "Copy failed!", fieldsReset: "Fields reset.", entityDeleted: "Entity deleted.", entityAdded: "Entity injected.", entityModified: "Entity modified.", sortedAsc: "Sorted: ASC.", sortedDesc: "Sorted: DESC.", customOrderSaved: "Order saved.", colorsRandomized: "Colors randomized.", dataExported: "Data exported.", importSuccessFile: "Imported from file.", importSuccessStream: "Imported from stream.", importFailed: "Import failed: Invalid format.", importError: "Import error: "},
+                prompts: { delete: "Delete this entity permanently?", factoryReset: "!! WARNING !!\nThis will wipe all data. Proceed?" }
+            },
+            ar: {
+                brandTitle: "المبرمج هيروس", mainTitle: "مصفوفة الروابط الاجتماعية",
+                controls: { reset: "إعادة تعيين", add: "إضافة كيان", config: "إعدادات", io: "إدخال/إخراج", search: "بحث" },
+                card: { go: "اذهب", copy: "نسخ الرابط" },
+                modals: {
+                    add: { title: "[ إضافة كيان جديد ]", name_placeholder: "اسم الكيان (مثال: واتساب)", icon_placeholder: "أيقونة التعريف (مثال: 📞)", placeholder_placeholder: "النص المؤقت (مثال: رقم الهاتف)", url_placeholder: "الرابط الأساسي (مثال: https://wa.me/)", button: "حقن" },
+                    edit: { title: "[ تعديل الكيان ]", name_placeholder: "اسم الكيان", icon_placeholder: "أيقونة التعريف", placeholder_placeholder: "النص المؤقت", url_placeholder: "الرابط الأساسي", notes_placeholder: "ملاحظات...", color_placeholder: "لون التوهج (مثال: #ff0000)", button: "تثبيت" },
+                    settings: { title: "[ إعدادات النظام ]", sortAsc: "ترتيب: تصاعدي", sortDesc: "ترتيب: تنازلي", sortCustom: "ترتيب: مخصص", randomColors: "ألوان عشوائية", factoryReset: "! إعادة ضبط المصنع !" },
+                    customSort: { title: "[ ترتيب مخصص ]", button: "حفظ الترتيب" },
+                    io: { title: "[ استيراد/تصدير ]", stream_placeholder: "مجرى بيانات JSON...", exportButton: "تصدير", importFileButton: "استيراد من ملف", importStreamButton: "استيراد من نص" },
+                    search: { title: "[ بحث في البيانات ]", placeholder: "أدخل عبارة البحث...", option_name: "الاسم", option_placeholder: "النص المؤقت", option_url: "الرابط", option_notes: "الملاحظات", no_results: "لا توجد نتائج." }
+                },
+                toasts: { inputRequired: "الإدخال مطلوب.", linkCopied: "تم النسخ.", copyFailed: "فشل النسخ!", fieldsReset: "تم التعيين.", entityDeleted: "تم الحذف.", entityAdded: "تم الحقن.", entityModified: "تم التعديل.", sortedAsc: "تم الترتيب تصاعدياً.", sortedDesc: "تم الترتيب تنازلياً.", customOrderSaved: "تم حفظ الترتيب.", colorsRandomized: "تم تلوين عشوائي.", dataExported: "تم التصدير.", importSuccessFile: "تم الاستيراد من ملف.", importSuccessStream: "تم الاستيراد من نص.", importFailed: "فشل الاستيراد: تنسيق خاطئ.", importError: "خطأ استيراد: "},
+                prompts: { delete: "هل تريد حذف هذا الكيان نهائياً؟", factoryReset: "!! تحذير !!\nسيتم مسح كل البيانات. هل تريد المتابعة؟" }
+            }
         };
-        // دالة لحفظ تفضيلات المستخدم في التخزين المحلي
-        function saveUserSettings() {
-            localStorage.setItem('darkMode', userSettings.darkMode);
-            localStorage.setItem('backgroundColor', userSettings.backgroundColor);
+        let currentLang = localStorage.getItem('language') || 'ar';
+        function setLanguage(lang) {
+            currentLang = lang; localStorage.setItem('language', lang);
+            document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-translate-key], [data-translate-key-placeholder]').forEach(element => {
+                const key = element.dataset.translateKey; const placeholderKey = element.dataset.translateKeyPlaceholder;
+                if (key) { const text = getTranslation(key); const textSpan = element.querySelector('span') || element; textSpan.textContent = text; }
+                if (placeholderKey) { element.placeholder = getTranslation(placeholderKey); }
+            });
+            document.getElementById('lang-toggle-text').textContent = lang === 'en' ? 'AR' : 'EN'; createSections();
         }
+        function getTranslation(keyPath) { let text = translations[currentLang]; keyPath.split('.').forEach(key => { text = text ? text[key] : `[${keyPath}]`; }); return text; }
+        function toggleLanguage() { setLanguage(currentLang === 'en' ? 'ar' : 'en'); }
 
-
-        // دالة حفظ المنصات في التخزين المحلي
-        function savePlatforms() {
-            localStorage.setItem('platforms', JSON.stringify(platforms));
-        }
-
-        // دالة استعادة المنصات من التخزين المحلي
+        // --- SECTION 3: DATA & STATE MANAGEMENT ---
+        let platforms = [];
+        function savePlatforms() { localStorage.setItem('platforms', JSON.stringify(platforms)); }
         function loadPlatforms() {
             const storedPlatforms = localStorage.getItem('platforms');
-            if (storedPlatforms) {
-                platforms = JSON.parse(storedPlatforms);
+            if (storedPlatforms) { platforms = JSON.parse(storedPlatforms); }
+            else {
+                platforms = [
+                    { name: "WhatsApp", icon: "📞", placeholder: "Phone Number", url: "https://wa.me/", notes: "", color: "#25D366" }, { name: "Viber", icon: "💜", placeholder: "Viber Number", url: "viber://add?number=", notes: "", color: "#7360f2" },
+                    { name: "Telegram", icon: "✈️", placeholder: "Telegram Username", url: "https://t.me/", notes: "", color: "#229ED9" }, { name: "Id Telegram", icon: "😎", placeholder: "Telegram ID", url: "tg://openmessage?user_id=", notes: "", color: "#229ED9" },
+                    { name: "Instagram", icon: "📸", placeholder: "Instagram ID", url: "https://instagram.com/", notes: "", color: "#E1306C" }, { name: "TikTok", icon: "🎶", placeholder: "TikTok ID", url: "https://www.tiktok.com/@", notes: "", color: "#000000" },
+                    { name: "Facebook", icon: "📘", placeholder: "Facebook ID", url: "https://www.facebook.com/", notes: "", color: "#1877F2" }, { name: "Messenger", icon: "💬", placeholder: "Messenger ID", url: "https://m.me/", notes: "", color: "#0078FF" },
+                    { name: "Twitter", icon: "❌", placeholder: "Twitter Handle", url: "https://twitter.com/", notes: "", color: "#1DA1F2" }, { name: "Discord", icon: "🎮", placeholder: "Username#Tag", url: "https://discord.com/users/", notes: "", color: "#5865F2" },
+                    { name: "Snapchat", icon: "👻", placeholder: "Snapchat ID", url: "https://www.snapchat.com/add/", notes: "", color: "#FFFC00" },
+                ];
             }
         }
-        // إنشاء الأقسام ديناميكيًا
-        function createSections() {
-            const container = document.getElementById("sections");
-            container.innerHTML = ""; // تنظيف الحاوية قبل الإضافة
+        
+        // --- SECTION 4: MODAL CONTROLS ---
+        function openModal(id) { document.getElementById(id).style.display = "block"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        const openAddPlatformModal = () => openModal("addPlatformModal");
+        const openEditPlatformModal = (index) => {
+            const platform = platforms[index];
+            document.getElementById("editPlatformName").value = platform.name; document.getElementById("editPlatformIcon").value = platform.icon;
+            document.getElementById("editPlatformPlaceholder").value = platform.placeholder; document.getElementById("editPlatformUrl").value = platform.url;
+            document.getElementById("editPlatformNotes").value = platform.notes; document.getElementById("editPlatformColor").value = platform.color;
+            document.getElementById("editPlatformModal").setAttribute('data-index', index); openModal("editPlatformModal");
+        };
+        const openSettingsModal = () => openModal("settingsModal");
+        const openImportExportModal = () => openModal("importExportModal");
+        const openCustomSortModal = () => {
+            const list = document.getElementById("sortablePlatforms"); list.innerHTML = "";
             platforms.forEach((platform, index) => {
-                const section = document.createElement("div");
-                section.className = "section";
-                section.style.background = `rgba(255,255,255, 0.1)`; // default color
-                if (userSettings.darkMode) {
-                    section.style.background = `rgba(0, 0, 0, 0.7)`
-                }
-                section.style.borderLeft = `5px solid ${platform.color}`
-
-                section.innerHTML = `<h2>${platform.icon} ${platform.name}</h2>
-                   <input type="text" id="${platform.name}Input" placeholder="${platform.placeholder}" />
-                    <button onclick="navigateTo('${platform.name}', '${platform.url}')">اذهب</button>
-                   <button class="copy-btn" onclick="copyToClipboard('${platform.name}', '${platform.url}')"><i class="fas fa-copy"></i></button>
-                   <button class="edit-button" onclick="openEditPlatformModal(${index})"><i class="fas fa-edit"></i></button>
-                    <button class="delete-button" onclick="deletePlatform(${index})"><i class="fas fa-trash-alt"></i></button>
-                 `;
-                container.appendChild(section);
-
+                const item = document.createElement("li"); item.className = "platform-item";
+                item.dataset.index = index; item.textContent = `${platform.icon} ${platform.name}`; list.appendChild(item);
             });
-            // استدعاء الحركات
-            observeSections();
-        }
-        // نسخ الى الحافظه
-        function copyToClipboard(name, url) {
-            const input = document.getElementById(`${name}Input`).value.trim();
-            if (!input) {
-                toastr.error("لا يمكن النسخ, يرجى ادخال البيانات أولاً");
-                return;
-            }
-            const link = `${url}${input}`;
-            navigator.clipboard.writeText(link).then(() => {
-                toastr.success("تم نسخ الرابط الى الحافظة");
-            })
-                .catch(err => {
-                    console.error("Failed to copy: ", err);
-                    toastr.error("فشل نسخ الرابط!");
-                })
-        }
+            new Sortable(list, { animation: 150 }); openModal("customSortModal");
+        };
+        const openSearchModal = () => openModal("searchModal");
+        const closeSearchModal = () => { closeModal("searchModal"); document.getElementById("searchInput").value = ""; document.getElementById("searchResults").innerHTML = ""; };
 
-
-        // التنقل إلى الرابط المناسب
+        // --- SECTION 5: CORE FUNCTIONALITY ---
+        function createSections() {
+            const container = document.getElementById("sections"); container.innerHTML = "";
+            platforms.forEach((platform, index) => {
+                const section = document.createElement("div"); section.className = "section animate__animated animate__zoomIn";
+                section.style.setProperty('--matrix-glow', `rgba(${hexToRgb(platform.color)}, 0.7)`); section.style.setProperty('--matrix-mid-red', platform.color);
+                const goText = getTranslation('card.go'); const copyText = getTranslation('card.copy');
+                const safeName = platform.name.replace(/\s/g, '');
+                section.innerHTML = `
+                    <button class="edit-button" onclick="openEditPlatformModal(${index})"><i class="fas fa-edit"></i></button>
+                    <button class="delete-button" onclick="deletePlatform(${index})"><i class="fas fa-trash-alt"></i></button>
+                    <h2><span class="h2-icon">${platform.icon}</span> ${platform.name}</h2>
+                    <input type="text" id="${safeName}Input" placeholder="${platform.placeholder}" />
+                    <button onclick="navigateTo('${safeName}', '${platform.url}')">${goText}</button>
+                    <button class="copy-btn" onclick="copyToClipboard('${safeName}', '${platform.url}')"><i class="fas fa-copy"></i> ${copyText}</button>`;
+                container.appendChild(section);
+            });
+            apply3dHoverEffect();
+        }
         function navigateTo(name, url) {
-            const input = document.getElementById(`${name}Input`).value.trim();
+            let input = document.getElementById(`${name}Input`).value.trim();
             const inputElement = document.getElementById(`${name}Input`);
-
-            if (!input) {
-                inputElement.classList.add('error');
-                inputElement.focus();
-                toastr.error("يرجى إدخال المعلومات المطلوبة!");
-                return;
-            }
-            inputElement.classList.remove('error');
+            if (!input) { inputElement.focus(); inputElement.style.borderColor = 'var(--matrix-bright-red)'; toastr.error(getTranslation('toasts.inputRequired')); return; }
+            inputElement.style.borderColor = 'var(--matrix-mid-red)';
+            if (name.toLowerCase().includes('whatsapp') || name.toLowerCase().includes('viber')) { input = formatPhoneNumber(input); }
             window.open(`${url}${input}`, '_blank');
         }
-
-        // الوضع الليلي
-        function toggleDarkMode() {
-            userSettings.darkMode = !userSettings.darkMode;
-            document.body.classList.toggle("dark-mode");
-            saveUserSettings();
-            updateAppColors();
-            toastr.success("تم تغيير الوضع بنجاح!");
-
+        function copyToClipboard(name, url) {
+            let input = document.getElementById(`${name}Input`).value.trim();
+            if (!input) { toastr.error(getTranslation('toasts.inputRequired')); return; }
+            if (name.toLowerCase().includes('whatsapp') || name.toLowerCase().includes('viber')) { input = formatPhoneNumber(input); }
+            const link = `${url}${input}`;
+            navigator.clipboard.writeText(link).then(() => { toastr.success(getTranslation('toasts.linkCopied')); }).catch(err => { toastr.error(getTranslation('toasts.copyFailed')); });
         }
-
-        function updateAppColors() {
-            const sections = document.querySelectorAll('.section');
-            if (userSettings.darkMode) {
-                document.body.classList.add("dark-mode");
-                sections.forEach(section => {
-                    section.style.background = `rgba(0, 0, 0, 0.7)`;
-                })
-            } else {
-                document.body.classList.remove("dark-mode");
-                sections.forEach(section => {
-                    section.style.background = `rgba(255,255,255,0.1)`;
-                })
-            }
-        }
-
-
-        // إعادة تعيين الحقول
-        function resetInputs() {
-            platforms.forEach(platform => {
-                const inputElement = document.getElementById(`${platform.name}Input`);
-                inputElement.value = "";
-                inputElement.classList.remove('error');
-            });
-            toastr.info("تم إعادة تعيين الحقول بنجاح!");
-        }
-
-        // مراقبة الأقسام وإضافة الحركات
-        function observeSections() {
-            const sections = document.querySelectorAll(".section");
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("show");
-                    }
-                });
-            }, { threshold: 0.2 });
-
-            sections.forEach(section => observer.observe(section));
-        }
-
-        function validateInput(inputElement, message, validationFn) {
-            const value = inputElement.value.trim();
-            if (!validationFn(value)) {
-                showError(inputElement, message);
-                return false;
-            } else {
-                hideError(inputElement);
-                return true;
-            }
-        }
-        // حذف المنصة
-         function deletePlatform(index) {
-            if (confirm("هل أنت متأكد أنك تريد حذف هذه المنصة؟")) {
-                platforms.splice(index, 1);
-                savePlatforms();
-                createSections();
-                toastr.success("تم حذف المنصة بنجاح!");
-            }
-        }
-
-
-        // إضافة منصة جديدة
+        function resetInputs() { document.querySelectorAll('.section input').forEach(input => input.value = ''); toastr.info(getTranslation('toasts.fieldsReset')); }
+        function deletePlatform(index) { if (confirm(getTranslation('prompts.delete'))) { platforms.splice(index, 1); savePlatforms(); createSections(); toastr.success(getTranslation('toasts.entityDeleted')); } }
         function addPlatform() {
-            const newPlatformName = document.getElementById("newPlatformName");
-            const newPlatformIcon = document.getElementById("newPlatformIcon");
-            const newPlatformPlaceholder = document.getElementById("newPlatformPlaceholder");
-            const newPlatformUrl = document.getElementById("newPlatformUrl");
-             const color = getRandomColor();
-            let isValid = true;
-            isValid = validateInput(newPlatformName, 'يرجى إدخال اسم المنصة', value => value !== "") && isValid;
-            isValid = validateInput(newPlatformIcon, 'يرجى إدخال الأيقونة', value => value !== "") && isValid;
-            isValid = validateInput(newPlatformPlaceholder, 'يرجى إدخال مثال للمدخل', value => value !== "") && isValid;
-            isValid = validateInput(newPlatformUrl, 'يرجى إدخال الرابط', value => value !== "") && isValid;
-
-            if (isValid) {
-                platforms.push({
-                    name: newPlatformName.value.trim(),
-                    icon: newPlatformIcon.value.trim(),
-                    placeholder: newPlatformPlaceholder.value.trim(),
-                    url: newPlatformUrl.value.trim(),
-                    notes: "",
-                   color: color,
-                });
-                savePlatforms();
-                createSections();
-                closeAddPlatformModal();
-                toastr.success("تمت إضافة المنصة بنجاح!");
-            }
+            const name = document.getElementById("newPlatformName").value.trim(); const icon = document.getElementById("newPlatformIcon").value.trim();
+            const placeholder = document.getElementById("newPlatformPlaceholder").value.trim(); const url = document.getElementById("newPlatformUrl").value.trim();
+            if(!name || !icon || !placeholder || !url) { toastr.error(getTranslation('toasts.inputRequired')); return; }
+            platforms.push({ name, icon, placeholder, url, notes: "", color: getRandomColor() });
+            savePlatforms(); createSections(); closeModal('addPlatformModal'); toastr.success(getTranslation('toasts.entityAdded'));
         }
-        // عرض رسالة الخطأ
-        function showError(inputElement, message) {
-            const errorId = inputElement.id + 'Error';
-            document.getElementById(errorId).textContent = message;
-            inputElement.classList.add('error');
-        }
-        // إخفاء رسالة الخطأ
-        function hideError(inputElement) {
-            const errorId = inputElement.id + 'Error';
-            document.getElementById(errorId).textContent = '';
-            inputElement.classList.remove('error');
-        }
-
-        // فتح نموذج إضافة منصة
-        function openAddPlatformModal() {
-            document.getElementById("addPlatformModal").style.display = "block";
-            resetAddPlatformModalInputs();
-        }
-
-        // إغلاق نموذج إضافة منصة
-        function closeAddPlatformModal() {
-            document.getElementById("addPlatformModal").style.display = "none";
-            resetAddPlatformModalInputs();
-        }
-
-        function resetAddPlatformModalInputs() {
-            document.getElementById("newPlatformName").value = "";
-            document.getElementById("newPlatformIcon").value = "";
-            document.getElementById("newPlatformPlaceholder").value = "";
-            document.getElementById("newPlatformUrl").value = "";
-            hideError(document.getElementById("newPlatformName"));
-            hideError(document.getElementById("newPlatformIcon"));
-            hideError(document.getElementById("newPlatformPlaceholder"));
-            hideError(document.getElementById("newPlatformUrl"));
-        }
-        // فتح نموذج تعديل منصة
-        function openEditPlatformModal(index) {
-            const platform = platforms[index];
-            document.getElementById("editPlatformName").value = platform.name;
-            document.getElementById("editPlatformIcon").value = platform.icon;
-            document.getElementById("editPlatformPlaceholder").value = platform.placeholder;
-            document.getElementById("editPlatformUrl").value = platform.url;
-            document.getElementById("editPlatformNotes").value = platform.notes;
-             document.getElementById("editPlatformColor").value = platform.color;
-            document.getElementById("editPlatformModal").setAttribute('data-index', index);
-            document.getElementById("editPlatformModal").style.display = "block";
-            resetEditPlatformModalErrors();
-        }
-        // إغلاق نموذج تعديل منصة
-        function closeEditPlatformModal() {
-            document.getElementById("editPlatformModal").style.display = "none";
-            resetEditPlatformModalInputs();
-            resetEditPlatformModalErrors();
-        }
-
-        function resetEditPlatformModalInputs() {
-            document.getElementById("editPlatformName").value = "";
-            document.getElementById("editPlatformIcon").value = "";
-            document.getElementById("editPlatformPlaceholder").value = "";
-            document.getElementById("editPlatformUrl").value = "";
-            document.getElementById("editPlatformNotes").value = "";
-           document.getElementById("editPlatformColor").value = "";
-
-        }
-        function resetEditPlatformModalErrors() {
-            hideError(document.getElementById("editPlatformName"));
-            hideError(document.getElementById("editPlatformIcon"));
-            hideError(document.getElementById("editPlatformPlaceholder"));
-            hideError(document.getElementById("editPlatformUrl"));
-             hideError(document.getElementById("editPlatformColor"));
-
-        }
-        // حفظ تعديلات المنصة
         function saveEditPlatform() {
-            const index = document.getElementById("editPlatformModal").getAttribute('data-index');
-            const editPlatformName = document.getElementById("editPlatformName");
-            const editPlatformIcon = document.getElementById("editPlatformIcon");
-            const editPlatformPlaceholder = document.getElementById("editPlatformPlaceholder");
-            const editPlatformUrl = document.getElementById("editPlatformUrl");
-             const editPlatformNotes = document.getElementById("editPlatformNotes");
-             const editPlatformColor = document.getElementById("editPlatformColor");
-
-
-            let isValid = true;
-
-             isValid = validateInput(editPlatformName, 'يرجى إدخال اسم المنصة', value => value !== "") && isValid;
-             isValid = validateInput(editPlatformIcon, 'يرجى إدخال الأيقونة', value => value !== "") && isValid;
-              isValid = validateInput(editPlatformPlaceholder, 'يرجى إدخال مثال للمدخل', value => value !== "") && isValid;
-            isValid = validateInput(editPlatformUrl, 'يرجى إدخال الرابط', value => value !== "") && isValid;
-             isValid = validateInput(editPlatformColor, "يرجى إدخال لون", value => /^#([0-9a-f]{3}){1,2}$/i.test(value)) && isValid;
-
-            if (isValid) {
-                platforms[index] = {
-                    name: editPlatformName.value.trim(),
-                    icon: editPlatformIcon.value.trim(),
-                   placeholder: editPlatformPlaceholder.value.trim(),
-                    url: editPlatformUrl.value.trim(),
-                     notes: editPlatformNotes.value.trim(),
-                     color: editPlatformColor.value.trim(),
-                };
-                savePlatforms();
-                createSections();
-                closeEditPlatformModal();
-                toastr.success("تم تعديل المنصة بنجاح!");
-            }
-        }
-
-        // فتح نموذج الإعدادات
-        function openSettingsModal() {
-            document.getElementById("settingsModal").style.display = "block";
-        }
-
-        // إغلاق نموذج الإعدادات
-        function closeSettingsModal() {
-            document.getElementById("settingsModal").style.display = "none";
-        }
-        // تعيين الوضع الفاتح
-        function setLightTheme() {
-            userSettings.darkMode = false;
-            saveUserSettings();
-            updateAppColors();
-            closeSettingsModal();
-            toastr.info("تم تغيير الوضع إلى الفاتح.");
-        }
-
-        // تعيين الوضع الداكن
-        function setDarkTheme() {
-            userSettings.darkMode = true;
-            saveUserSettings();
-            updateAppColors();
-            closeSettingsModal();
-            toastr.info("تم تغيير الوضع إلى الداكن.");
-        }
-        // ترتيب المنصات أبجديا تصاعديا
-        function sortPlatformsByNameAsc() {
-            platforms.sort((a, b) => a.name.localeCompare(b.name));
-            savePlatforms();
-            createSections();
-            closeSettingsModal();
-            toastr.success("تم ترتيب المنصات تصاعدياً!");
-        }
-
-        // ترتيب المنصات أبجديا تنازليا
-        function sortPlatformsByNameDesc() {
-            platforms.sort((a, b) => b.name.localeCompare(a.name));
-            savePlatforms();
-            createSections();
-            closeSettingsModal();
-            toastr.success("تم ترتيب المنصات تنازلياً!");
-        }
-
-        function openCustomSortModal() {
-            document.getElementById("customSortModal").style.display = "block";
-            const sortablePlatformsList = document.getElementById("sortablePlatforms");
-            sortablePlatformsList.innerHTML = "";
-            platforms.forEach((platform, index) => {
-                const listItem = document.createElement("li");
-                listItem.className = "platform-item";
-                listItem.setAttribute("data-index", index);
-                listItem.innerHTML = `<span>${platform.name}</span>`;
-                sortablePlatformsList.appendChild(listItem);
-            });
-            new Sortable(sortablePlatformsList, {
-                animation: 150,
-            });
-
-        }
-
-        function closeCustomSortModal() {
-            document.getElementById("customSortModal").style.display = "none";
+            const index = document.getElementById("editPlatformModal").dataset.index;
+            platforms[index].name = document.getElementById("editPlatformName").value.trim(); platforms[index].icon = document.getElementById("editPlatformIcon").value.trim();
+            platforms[index].placeholder = document.getElementById("editPlatformPlaceholder").value.trim(); platforms[index].url = document.getElementById("editPlatformUrl").value.trim();
+            platforms[index].notes = document.getElementById("editPlatformNotes").value.trim(); platforms[index].color = document.getElementById("editPlatformColor").value.trim();
+            savePlatforms(); createSections(); closeModal('editPlatformModal'); toastr.success(getTranslation('toasts.entityModified'));
         }
         function saveCustomOrder() {
-            const sortablePlatformsList = document.getElementById("sortablePlatforms");
-            const sortedItems = Array.from(sortablePlatformsList.children);
-            const newOrder = sortedItems.map(item => parseInt(item.getAttribute('data-index')));
-            const sortedPlatforms = newOrder.map(index => platforms[index]);
-            platforms = sortedPlatforms;
-            savePlatforms();
-            createSections();
-            closeCustomSortModal();
-            toastr.success("تم حفظ الترتيب المخصص!");
+            const newOrder = Array.from(document.querySelectorAll('#sortablePlatforms li')).map(item => platforms[item.dataset.index]);
+            platforms = newOrder; savePlatforms(); createSections(); closeModal('customSortModal'); toastr.success(getTranslation('toasts.customOrderSaved'));
         }
-          function selectPredefinedColor(color) {
-            userSettings.backgroundColor = color;
-              saveUserSettings();
-              document.body.style.background = `linear-gradient(135deg, ${color}, #2a5298)`;
-              $("#colorPicker").spectrum("set", color);
-
-          }
-
-
-        // إعادة تعيين جميع الإعدادات
-        function resetAllSettings() {
-            localStorage.clear();
-            window.location.reload();
-            toastr.warning("تم إعادة تعيين جميع الإعدادات!");
-        }
-
-        // فتح نموذج الاستيراد والتصدير
-        function openImportExportModal() {
-            document.getElementById("importExportModal").style.display = "block";
-        }
-        // اغلاق نموذج الاستيراد والتصدير
-        function closeImportExportModal() {
-            document.getElementById("importExportModal").style.display = "none";
-            document.getElementById("exportTextArea").value = '';
-        }
-        // تصدير المنصات
-        function exportPlatforms() {
-            const json = JSON.stringify(platforms, null, 2);
-            document.getElementById("exportTextArea").value = json;
-            toastr.info("تم تصدير المنصات إلى مربع النص!");
-        }
-        // استيراد المنصات من ملف
-        function importPlatformsFromFile(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const json = e.target.result;
-                        const importedPlatforms = JSON.parse(json);
-                        if (Array.isArray(importedPlatforms)) {
-                            platforms = importedPlatforms;
-                            savePlatforms();
-                            createSections();
-                            closeImportExportModal();
-                            toastr.success("تم استيراد المنصات بنجاح من الملف!");
-                        } else {
-                            toastr.error("تنسيق الملف غير صالح، يجب أن يكون JSON array!");
-                        }
-                    } catch (error) {
-                        toastr.error("حدث خطأ أثناء استيراد المنصات!");
-                        console.error("Error importing platforms:", error);
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-        // استيراد المنصات من مربع النص
-        function importPlatforms() {
-            const json = document.getElementById("exportTextArea").value;
-            try {
-                const importedPlatforms = JSON.parse(json);
-                if (Array.isArray(importedPlatforms)) {
-                    platforms = importedPlatforms;
-                    savePlatforms();
-                    createSections();
-                    closeImportExportModal();
-                    toastr.success("تم استيراد المنصات بنجاح!");
-                } else {
-                    toastr.error("تنسيق JSON غير صالح، يجب أن يكون JSON array!");
-                }
-            } catch (error) {
-                toastr.error("حدث خطأ أثناء استيراد المنصات!");
-                console.error("Error importing platforms:", error);
-            }
-        }
-        // فتح نموذج البحث
-        function openSearchModal() {
-            document.getElementById("searchModal").style.display = "block";
-            $('#searchFieldSelect').select2({
-                placeholder: "اختر حقل البحث",
-                dir: "rtl",
-            });
-        }
-        // إغلاق نموذج البحث
-        function closeSearchModal() {
-            document.getElementById("searchModal").style.display = "none";
-            document.getElementById("searchInput").value = "";
-            document.getElementById("searchResults").innerHTML = "";
-            $('#searchFieldSelect').val(null).trigger('change');
-        }
-        // البحث عن منصة
         function searchPlatforms() {
-            const searchTerm = document.getElementById("searchInput").value.trim();
-            const searchField = document.getElementById("searchFieldSelect").value;
-            const resultsContainer = document.getElementById("searchResults");
-            resultsContainer.innerHTML = "";
-            if (!searchTerm) {
-                toastr.warning("يرجى إدخال كلمة البحث!");
-                return;
-            }
-            const filteredPlatforms = platforms.filter(platform => {
-                const searchValue = String(platform[searchField]).toLowerCase();
-                return searchValue.includes(searchTerm.toLowerCase());
-            });
-            if (filteredPlatforms.length === 0) {
-                resultsContainer.innerHTML = "<p>لا توجد نتائج مطابقة.</p>";
-                return;
-            }
-            filteredPlatforms.forEach(platform => {
-                const resultItem = document.createElement("div");
-                resultItem.className = "search-result-item";
-                resultItem.innerHTML = `
-                 <span>الاسم:</span> ${platform.name}<br>
-                  <span>الأيقونة:</span> ${platform.icon}<br>
-                   <span>مثال الإدخال:</span> ${platform.placeholder}<br>
-                 <span>الرابط:</span> ${platform.url}<br>
-                   <span>ملاحظات:</span> ${platform.notes}
-               `;
-                resultsContainer.appendChild(resultItem);
-            });
-
+            const term = document.getElementById("searchInput").value.toLowerCase(); const field = document.getElementById("searchFieldSelect").value;
+            const resultsContainer = document.getElementById("searchResults"); resultsContainer.innerHTML = ""; if (!term) return;
+            const results = platforms.filter(p => p[field] && String(p[field]).toLowerCase().includes(term));
+            if (results.length === 0) { resultsContainer.innerHTML = `<p>${getTranslation('modals.search.no_results')}</p>`; }
+            else { results.forEach(p => { const item = document.createElement("div"); item.className = "search-result-item"; item.innerHTML = `<strong>${p.name}</strong><br>URL: ${p.url}<br>Notes: ${p.notes || 'N/A'}`; resultsContainer.appendChild(item); }); }
         }
-        // تهيئة لون الخلفية
-        function initColorPicker() {
-            $("#colorPicker").spectrum({
-                type: "color",
-                preferredFormat: "hex",
-                showInput: true,
-                move: function (color) {
-                    document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
-                    userSettings.backgroundColor = color.toHexString();
-                },
-                change: function (color) {
-                    document.body.style.background = `linear-gradient(135deg, ${color.toHexString()}, #2a5298)`;
-                    userSettings.backgroundColor = color.toHexString();
-                    saveUserSettings();
-                }
-
+        function exportPlatforms() { document.getElementById("exportTextArea").value = JSON.stringify(platforms, null, 2); toastr.info(getTranslation('toasts.dataExported')); }
+        function importFromJSON(jsonString, source) {
+            try {
+                const imported = JSON.parse(jsonString);
+                if (Array.isArray(imported)) { platforms = imported; savePlatforms(); createSections(); closeModal('importExportModal'); toastr.success(getTranslation(source === 'file' ? 'toasts.importSuccessFile' : 'toasts.importSuccessStream')); }
+                else { toastr.error(getTranslation('toasts.importFailed')); }
+            } catch (e) { toastr.error(getTranslation('toasts.importError') + e.message); }
+        }
+        function importPlatformsFromFile(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = e => importFromJSON(e.target.result, 'file'); reader.readAsText(file); }
+        function importPlatformsFromText() { importFromJSON(document.getElementById("exportTextArea").value, 'stream'); }
+        function sortPlatformsByNameAsc() { platforms.sort((a, b) => a.name.localeCompare(b.name)); savePlatforms(); createSections(); closeModal('settingsModal'); toastr.success(getTranslation('toasts.sortedAsc')); }
+        function sortPlatformsByNameDesc() { platforms.sort((a, b) => b.name.localeCompare(a.name)); savePlatforms(); createSections(); closeModal('settingsModal'); toastr.success(getTranslation('toasts.sortedDesc')); }
+        function setRandomPlatformColors() { platforms.forEach(p => { p.color = getRandomColor(); }); savePlatforms(); createSections(); toastr.success(getTranslation('toasts.colorsRandomized')); }
+        function resetAllSettings() { if (confirm(getTranslation('prompts.factoryReset'))) { localStorage.clear(); window.location.reload(); } }
+        
+        // --- SECTION 6: UTILITY FUNCTIONS ---
+        function apply3dHoverEffect() {
+            document.querySelectorAll('.section').forEach(section => {
+                section.addEventListener('mousemove', (e) => { const rect = section.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const cX = rect.width / 2; const cY = rect.height / 2; const rX = ((y - cY) / cY) * -10; const rY = ((x - cX) / cX) * 10; section.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`; });
+                section.addEventListener('mouseleave', () => { section.style.transform = 'rotateX(0deg) rotateY(0deg)'; });
             });
         }
-        // دالة للحصول على لون عشوائي
-          function getRandomColor() {
-           const letters = '0123456789ABCDEF';
-            let color = '#';
-             for (let i = 0; i < 6; i++) {
-              color += letters[Math.floor(Math.random() * 16)];
-           }
-             return color;
-         }
-        // دالة لتلوين المنصات بشكل عشوائي
-        function setRandomPlatformColors() {
-             platforms.forEach(platform => {
-              platform.color = getRandomColor();
-             });
-           savePlatforms();
-              createSections();
-            toastr.success("تم تلوين المنصات بشكل عشوائي!");
-         }
-        // دالة لفتح نموذج الالوان المخصصة للمنصات
-        function openCustomColorModal() {
-             document.getElementById("customColorModal").style.display = "block";
-            const customColorPlatformsList = document.getElementById("customColorPlatforms");
-            customColorPlatformsList.innerHTML = "";
-             platforms.forEach((platform, index) => {
-                 const listItem = document.createElement("li");
-                listItem.className = "platform-item";
-               listItem.setAttribute("data-index", index);
-               listItem.innerHTML = `
-                    <span>${platform.name}</span>
-                  <input type="text" class="color-input" value="${platform.color}" data-index="${index}" style="margin-right: 10px; width: 80px;"/>
-                `;
-               customColorPlatformsList.appendChild(listItem);
-          });
-           // Initialize spectrum color pickers for each input
-             $('.color-input').spectrum({
-                type: "color",
-                  preferredFormat: "hex",
-                  showInput: true,
-                change: function (color) {
-                    const index = $(this).data('index');
-                    platforms[index].color = color.toHexString();
-               }
-          });
-      }
-     // دالة لاغلاق نموذج الالوان المخصصة للمنصات
-    function closeCustomColorModal() {
-            document.getElementById("customColorModal").style.display = "none";
-      }
-       // دالة حفظ الالوان المخصصة للمنصات
-      function saveCustomColors() {
-          savePlatforms();
-             createSections();
-           closeCustomColorModal();
-             toastr.success("تم حفظ الألوان المخصصة!");
-         }
-        // دالة لتلوين الخلفية بشكل عشوائي
-          function setRandomBackground() {
-              const color = getRandomColor();
-                userSettings.backgroundColor = color;
-               saveUserSettings();
-            document.body.style.background = `linear-gradient(135deg, ${color}, #2a5298)`;
-           $("#colorPicker").spectrum("set", color);
-           toastr.success("تم تلوين الخلفية بشكل عشوائي!");
-           }
-        // دالة لفتح نموذج تلوين الخلفية المخصص
-         function openCustomColorModalBackground() {
-              document.getElementById("customColorModalBackground").style.display = "block";
-               $("#customBackgroundInput").spectrum({
-                  type: "color",
-                preferredFormat: "hex",
-               showInput: true,
-              });
-          }
-          // دالة لاغلاق نموذج تلوين الخلفية المخصص
-        function closeCustomColorModalBackground() {
-               document.getElementById("customColorModalBackground").style.display = "none";
-         }
-        // دالة لحفظ تلوين الخلفية المخصص
-      function saveCustomBackgroundColor(){
-           const color =  $("#customBackgroundInput").spectrum("get").toHexString();
-               userSettings.backgroundColor = color;
-                saveUserSettings();
-                document.body.style.background = `linear-gradient(135deg, ${color}, #2a5298)`;
-                $("#colorPicker").spectrum("set", color);
-              closeCustomColorModalBackground();
-                toastr.success("تم حفظ لون الخلفية المخصص!");
-          }
-        // التهيئة
+        function formatPhoneNumber(number) { return number.replace(/\D/g, ''); }
+        function getRandomColor() { const l = '0123456789ABCDEF'; let c = '#'; for (let i = 0; i < 6; i++) { c += l[Math.floor(Math.random() * 16)]; } return c; }
+        function hexToRgb(hex) { var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return r ? `${parseInt(r[1], 16)}, ${parseInt(r[2], 16)}, ${parseInt(r[3], 16)}` : '255,0,0'; }
+
+        // --- SECTION 7: INITIALIZATION ---
         function init() {
             loadPlatforms();
-            updateAppColors();
-            createSections();
-            initColorPicker();
-            document.body.style.background = `linear-gradient(135deg, ${userSettings.backgroundColor}, #2a5298)`;
-             $("#colorPicker").spectrum("set", userSettings.backgroundColor);
-             if (userSettings.darkMode) {
-                document.body.classList.add("dark-mode")
-             }
-              toastr.options = {
-               "closeButton": true,
-                 "progressBar": true,
-                "positionClass": "toast-top-right",
-           }
+            toastr.options = { "closeButton": true, "progressBar": true, "positionClass": "toast-bottom-right", "timeOut": "3000" };
+            setLanguage(currentLang);
         }
-        // تنفيذ التهيئة عند التحميل
         window.onload = init;
     </script>
 </body>
